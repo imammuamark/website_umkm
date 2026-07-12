@@ -18,9 +18,8 @@ class CatalogSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Locations
         Location::updateOrCreate(
-            ['name' => 'Aromatica Bandung Main Roastery'],
+            ['name' => 'Panama Corner Bandung Main Roastery'],
             [
                 'address' => 'Jl. Merdeka No. 56, Citarum, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115',
                 'latitude' => -6.91019680,
@@ -34,7 +33,7 @@ class CatalogSeeder extends Seeder
         );
 
         Location::updateOrCreate(
-            ['name' => 'Aromatica Jakarta Coffee Experience Bar'],
+            ['name' => 'Panama Corner Jakarta Coffee Experience Bar'],
             [
                 'address' => 'Jl. Sudirman No. 12, Senayan, Kec. Kebayoran Baru, Jakarta Selatan, DKI Jakarta 12190',
                 'latitude' => -6.22384700,
@@ -140,7 +139,7 @@ class CatalogSeeder extends Seeder
         );
 
         // 5. Articles
-        $admin = User::where('email', 'admin@aromaticacoffee.com')->first();
+        $admin = User::where('email', 'admin@panamacorner.com')->first();
         $authorId = $admin ? $admin->id : 1;
 
         Article::updateOrCreate(
@@ -152,7 +151,7 @@ class CatalogSeeder extends Seeder
                 'content' => '<p>Metode tuang (pour over) menggunakan V60 adalah salah satu cara paling populer untuk menikmati kopi single origin. Metode ini sangat baik dalam mengekstraksi aroma floral dan fruity yang halus pada kopi Arabika. Berikut adalah langkah-langkah mudah untuk menyeduh V60 yang seimbang di rumah:</p><h3>1. Persiapkan Rasio dan Suhu Air</h3><p>Gunakan rasio seduh 1:15 (misalnya 15 gram kopi untuk 225 ml air). Pastikan suhu air ideal berada di kisaran 90-93 derajat Celsius. Air mendidih yang didiamkan sekitar 1 menit biasanya mencapai suhu ini.</p><h3>2. Basahi Kertas Saring (Rinsing)</h3><p>Letakkan kertas saring pada dripper V60 dan bilas dengan air panas. Langkah ini penting untuk menghilangkan rasa kertas (papery taste) dan menghangatkan dripper serta server Anda. Buang air bilasan dari wadah penampung.</p><h3>3. Proses Pemekaran (Blooming)</h3><p>Masukkan kopi gilingan medium-coarse, lalu ratakan. Tuangkan sekitar 30-40 ml air panas secara perlahan ke seluruh permukaan kopi. Diamkan selama 30-40 detik. Proses ini melepaskan gas karbon dioksida terperangkap di dalam biji kopi (blooming), sehingga ekstraksi rasa berikutnya menjadi lebih optimal.</p><h3>4. Tuangan Utama</h3><p>Tuang sisa air dalam 2 atau 3 tahap tuangan secara spiral melingkar dari tengah ke arah luar (tanpa mengenai dinding kertas saring). Usahakan aliran air stabil dan konstan. Seluruh proses penyeduhan idealnya selesai dalam waktu 2 menit 30 detik hingga 3 menit.</p><p>Selamat mencoba! Eksperimenlah dengan tingkat kehalusan gilingan Anda untuk menemukan profil rasa terbaik.</p>',
                 'excerpt' => 'Pelajari langkah-langkah mudah menyeduh kopi menggunakan metode V60 pour over untuk menghasilkan rasa kopi yang bersih, manis, dan kaya rasa.',
                 'meta_title' => 'Cara Seduh Kopi V60 Rumahan Terbaik | Panduan V60 Pemula',
-                'meta_description' => 'Ingin menyeduh kopi V60 yang manis dan tidak terlalu pahit? Simak panduan praktis BARISTA Aromatica Coffee di sini.',
+                'meta_description' => 'Ingin menyeduh kopi V60 yang manis dan tidak terlalu pahit? Simak panduan praktis BARISTA Panama Corner di sini.',
                 'status' => 'published',
                 'published_at' => now(),
                 'reading_time' => 3

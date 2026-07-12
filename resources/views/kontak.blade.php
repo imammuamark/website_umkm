@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Hubungi Kami | ' . \App\Models\SiteSetting::get('meta_title_default', 'Aromatica Coffee'))
+@section('title', 'Hubungi Kami | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
 <!-- Header Page -->

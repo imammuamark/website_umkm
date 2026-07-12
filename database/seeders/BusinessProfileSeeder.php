@@ -15,8 +15,8 @@ class BusinessProfileSeeder extends Seeder
         BusinessProfile::updateOrCreate(
             ['id' => 1],
             [
-                'business_name' => 'Aromatica Coffee',
-                'description' => 'Aromatica Coffee adalah produsen kopi premium lokal yang berfokus pada kopi artisan nusantara berkualitas tinggi. Didirikan dengan komitmen untuk memberdayakan petani kopi lokal, kami menghadirkan biji kopi pilihan terbaik dari berbagai pelosok Indonesia langsung ke cangkir Anda, melalui proses pemanggangan (roasting) modern yang menjaga keunikan cita rasa asli daerah masing-masing.',
+                'business_name' => 'Panama Corner',
+                'description' => 'Panama Corner adalah penyedia kopi spesialti premium yang berfokus pada kurasi biji kopi kualitas tertinggi dan pengalaman seduh kopi modern. Kami menghadirkan biji kopi artisan pilihan dari perkebunan terbaik, diracik dengan dedikasi tinggi untuk menghadirkan keunikan profil rasa orisinal di setiap cangkir Anda.',
                 'vision' => 'Menjadi pelopor produk kopi artisan lokal terbaik yang diakui secara nasional maupun internasional, serta berkontribusi nyata pada kesejahteraan petani kopi Indonesia.',
                 'mission' => '1. Menyediakan biji kopi arabika dan robusta pilihan dengan proses kurasi yang ketat. 2. Menerapkan teknik pemanggangan modern untuk menghasilkan profil rasa kopi yang konsisten dan premium. 3. Membangun kemitraan yang adil dan berkelanjutan bersama petani kopi lokal. 4. Mengedukasi masyarakat luas tentang keragaman rasa kopi asli Indonesia.',
                 'logo' => null, // Managed via media library

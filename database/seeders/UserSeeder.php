@@ -16,10 +16,10 @@ class UserSeeder extends Seeder
     {
         // 1. Super Admin User
         $superAdmin = User::updateOrCreate(
-            ['email' => 'admin@aromaticacoffee.com'],
+            ['email' => 'admin@panamacorner.com'],
             [
-                'name' => 'Super Admin Aromatica',
-                'password' => Hash::make('AromaticaAdmin2026!'),
+                'name' => 'Super Admin Panama Corner',
+                'password' => Hash::make('PanamaAdmin2026!'),
                 'is_active' => true,
             ]
         );
@@ -30,10 +30,10 @@ class UserSeeder extends Seeder
 
         // 2. Editor User
         $editor = User::updateOrCreate(
-            ['email' => 'editor@aromaticacoffee.com'],
+            ['email' => 'editor@panamacorner.com'],
             [
-                'name' => 'Editor Aromatica',
-                'password' => Hash::make('AromaticaEditor2026!'),
+                'name' => 'Editor Panama Corner',
+                'password' => Hash::make('PanamaEditor2026!'),
                 'is_active' => true,
             ]
         );
@@ -44,10 +44,10 @@ class UserSeeder extends Seeder
 
         // 3. Staff User
         $staff = User::updateOrCreate(
-            ['email' => 'staff@aromaticacoffee.com'],
+            ['email' => 'staff@panamacorner.com'],
             [
-                'name' => 'Staff Aromatica',
-                'password' => Hash::make('AromaticaStaff2026!'),
+                'name' => 'Staff Panama Corner',
+                'password' => Hash::make('PanamaStaff2026!'),
                 'is_active' => true,
             ]
         );

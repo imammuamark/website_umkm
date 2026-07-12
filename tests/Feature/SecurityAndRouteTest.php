@@ -81,7 +81,7 @@ class SecurityAndRouteTest extends TestCase
      */
     public function test_admin_profile_page_loads_for_authenticated_admin(): void
     {
-        $admin = User::where('email', 'admin@aromaticacoffee.com')->first();
+        $admin = User::where('email', 'admin@panamacorner.com')->first();
         $this->assertNotNull($admin);
 
         // Act as admin and visit Filament dashboard custom page MyProfile

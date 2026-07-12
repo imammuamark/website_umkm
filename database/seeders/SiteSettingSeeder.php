@@ -20,16 +20,16 @@ class SiteSettingSeeder extends Seeder
             
             // Contacts
             'whatsapp_number' => '6281234567890',
-            'whatsapp_text_template' => 'Halo Admin Aromatica Coffee, saya ingin bertanya/memesan produk: {product_name}',
-            'facebook_url' => 'https://facebook.com/aromaticacoffee',
-            'instagram_url' => 'https://instagram.com/aromaticacoffee',
-            'tiktok_url' => 'https://tiktok.com/@aromaticacoffee',
-            'email_address' => 'info@aromaticacoffee.com',
+            'whatsapp_text_template' => 'Halo Admin Panama Corner, saya ingin bertanya/memesan produk: {product_name}',
+            'facebook_url' => 'https://facebook.com/panamacorner',
+            'instagram_url' => 'https://instagram.com/panamacorner',
+            'tiktok_url' => 'https://tiktok.com/@panamacorner',
+            'email_address' => 'info@panamacorner.com',
             'office_phone' => '+62 22 1234567',
             
             // SEO & Integrations
-            'meta_title_default' => 'Aromatica Coffee | Artisan Coffee Roaster Bandung',
-            'meta_description_default' => 'Biji Kopi Arabika dan Robusta Pilihan Nusantara Dipanggang Segar Secara Artisan di Bandung.',
+            'meta_title_default' => 'Panama Corner | Specialty Coffee & Roastery',
+            'meta_description_default' => 'Kurasi Biji Kopi Spesialti Terbaik dan Pengalaman Seduh Modern dari Panama Corner.',
             'google_analytics_id' => 'G-XXXXXXXXXX',
             'meta_pixel_id' => 'XXXXXXXXXXXXXXX',
             'tiktok_pixel_id' => 'XXXXXXXXXXXXXXXX',

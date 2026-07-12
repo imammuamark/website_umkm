@@ -61,7 +61,7 @@
                 Dedikasi Kami untuk Kopi Indonesia yang Lebih Baik.
             </h2>
             <p class="text-base text-gray-600 leading-relaxed">
-                {{ $profile->description ?? 'Aromatica Coffee adalah produsen kopi lokal Bandung yang berdedikasi mengemas cita rasa nusantara terbaik langsung ke rumah Anda.' }}
+                {{ $profile->description ?? 'Panama Corner adalah penyedia kopi spesialti premium yang berdedikasi mengemas cita rasa terbaik langsung ke cangkir Anda.' }}
             </p>
             
             <div class="space-y-3">
@@ -93,8 +93,8 @@
             <!-- Simulated premium aesthetic container -->
             <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10"></div>
             <div class="text-center p-6 relative z-10 space-y-3">
-                <div class="text-4xl text-primary font-bold">Aromatica</div>
-                <div class="text-xs tracking-widest text-gray-500 uppercase">Artisan Coffee Roasters</div>
+                <div class="text-4xl text-primary font-bold">Panama Corner</div>
+                <div class="text-xs tracking-widest text-gray-500 uppercase">Specialty Coffee Roasters</div>
             </div>
         </div>
     </div>

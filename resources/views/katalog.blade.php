@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Katalog Kopi & Alat Seduh | ' . \App\Models\SiteSetting::get('meta_title_default', 'Aromatica Coffee'))
+@section('title', 'Katalog Kopi & Alat Seduh | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
 <!-- Page Title Header -->

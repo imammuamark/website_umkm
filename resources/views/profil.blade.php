@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tentang Kami | ' . \App\Models\SiteSetting::get('meta_title_default', 'Aromatica Coffee'))
+@section('title', 'Tentang Kami | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
 <!-- Header Page -->
@@ -8,7 +8,7 @@
     <div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-4">
         <h1 class="text-4xl font-extrabold font-title tracking-tight sm:text-5xl">Tentang Kami</h1>
-        <p class="text-lg text-gray-300 max-w-2xl mx-auto">Mengenal lebih dekat perjalanan Aromatica Coffee dalam meracik cita rasa kopi terbaik nusantara.</p>
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">Mengenal lebih dekat perjalanan Panama Corner dalam meracik cita rasa kopi terbaik nusantara.</p>
     </div>
 </section>
 
@@ -20,7 +20,7 @@
             <h2 class="text-3xl font-bold tracking-tight text-gray-900 font-title sm:text-4xl">Menjaga Warisan Kopi Nusantara Sejak 2021</h2>
             <div class="text-gray-600 space-y-4 leading-relaxed">
                 <p>
-                    {{ $profile->description ?? 'Aromatica Coffee berawal dari kecintaan kami terhadap kopi Indonesia yang kaya dan beragam. Sejak berdiri di kota Bandung, kami berkomitmen untuk melestarikan tradisi roasting artisan tradisional dengan sentuhan teknologi modern.' }}
+                    {{ $profile->description ?? 'Panama Corner berawal dari kecintaan kami terhadap kopi spesialti premium yang kaya dan beragam. Sejak berdiri, kami berkomitmen untuk melestarikan tradisi seduh berkualitas tinggi dengan sentuhan inovasi modern.' }}
                 </p>
                 <p>
                     Kami bekerja sama secara langsung (direct trade) dengan para petani kopi di berbagai daerah, mulai dari Aceh Gayo, Mandheling, Kerinci, Temanggung, Kintamani, hingga Flores Bajawa. Kami memastikan setiap transaksi menguntungkan petani guna mendukung ekosistem kopi yang adil, berkelanjutan, dan berkualitas tinggi.

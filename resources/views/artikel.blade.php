@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edukasi Kopi & Cerita Roastery | ' . \App\Models\SiteSetting::get('meta_title_default', 'Aromatica Coffee'))
+@section('title', 'Edukasi Kopi & Cerita Roastery | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
 <!-- Header -->

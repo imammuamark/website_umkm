@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
     <!-- Dynamic SEO Meta Tags -->
-    <title>@yield('title', \App\Models\SiteSetting::get('meta_title_default', 'Aromatica Coffee'))</title>
-    <meta name="description" content="@yield('meta_description', \App\Models\SiteSetting::get('meta_description_default', 'Artisan Coffee Roaster Premium.'))">
+    <title>@yield('title', \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))</title>
+    <meta name="description" content="@yield('meta_description', \App\Models\SiteSetting::get('meta_description_default', 'Specialty Coffee & Roastery Premium.'))">
     
     <!-- Open Graph (Facebook / WA / Instagram Sharing) -->
-    <meta property="og:title" content="@yield('title', \App\Models\SiteSetting::get('meta_title_default', 'Aromatica Coffee'))">
-    <meta property="og:description" content="@yield('meta_description', \App\Models\SiteSetting::get('meta_description_default', 'Artisan Coffee Roaster Premium.'))">
+    <meta property="og:title" content="@yield('title', \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))">
+    <meta property="og:description" content="@yield('meta_description', \App\Models\SiteSetting::get('meta_description_default', 'Specialty Coffee & Roastery Premium.'))">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request()->url() }}">
     <meta property="og:image" content="@yield('og_image', asset('images/og-default.jpg'))">
@@ -84,7 +84,7 @@
     {
         "@@context": "https://schema.org",
         "@@type": "LocalBusiness",
-        "name": "{{ \App\Models\BusinessProfile::first()?->business_name ?? 'Aromatica Coffee' }}",
+        "name": "{{ \App\Models\BusinessProfile::first()?->business_name ?? 'Panama Corner' }}",
         "image": "{{ asset('images/logo.png') }}",
         "telephone": "{{ \App\Models\SiteSetting::get('office_phone', '') }}",
         "email": "{{ \App\Models\SiteSetting::get('email_address', '') }}",
@@ -120,7 +120,7 @@
                             </div>
                         @endif
                         <span class="font-extrabold text-xl tracking-tight text-gray-900 font-title">
-                            {{ \App\Models\BusinessProfile::first()?->business_name ?? 'Aromatica Coffee' }}
+                            {{ \App\Models\BusinessProfile::first()?->business_name ?? 'Panama Corner' }}
                         </span>
                     </a>
                 </div>
@@ -193,7 +193,7 @@
                 <!-- Branding column -->
                 <div class="col-span-1 md:col-span-1 space-y-4">
                     <h3 class="text-white font-bold text-lg font-title">
-                        {{ \App\Models\BusinessProfile::first()?->business_name ?? 'Aromatica Coffee' }}
+                        {{ \App\Models\BusinessProfile::first()?->business_name ?? 'Panama Corner' }}
                     </h3>
                     <p class="text-sm text-gray-400 leading-relaxed">
                         Pusat biji kopi artisan premium Bandung. Menyajikan keunikan rasa Nusantara langsung ke cangkir Anda.
@@ -244,7 +244,7 @@
                 <div class="col-span-1">
                     <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-4">Kontak Kami</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><span class="text-gray-500">Email:</span> <a href="mailto:{{ \App\Models\SiteSetting::get('email_address', 'info@aromaticacoffee.com') }}" class="hover:text-white transition duration-150">{{ \App\Models\SiteSetting::get('email_address', 'info@aromaticacoffee.com') }}</a></li>
+                        <li><span class="text-gray-500">Email:</span> <a href="mailto:{{ \App\Models\SiteSetting::get('email_address', 'info@panamacorner.com') }}" class="hover:text-white transition duration-150">{{ \App\Models\SiteSetting::get('email_address', 'info@panamacorner.com') }}</a></li>
                         <li><span class="text-gray-500">Telepon:</span> <span class="text-gray-400">{{ \App\Models\SiteSetting::get('office_phone', '+62 22 1234567') }}</span></li>
                         <li><span class="text-gray-500">Alamat:</span> <span class="text-gray-400">Jl. Merdeka No. 56, Bandung</span></li>
                     </ul>
@@ -254,7 +254,7 @@
             <hr class="border-gray-800 mb-8" />
 
             <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
-                <p>&copy; {{ date('Y') }} {{ \App\Models\BusinessProfile::first()?->business_name ?? 'Aromatica Coffee' }}. Hak Cipta Dilindungi Undang-Undang.</p>
+                <p>&copy; {{ date('Y') }} {{ \App\Models\BusinessProfile::first()?->business_name ?? 'Panama Corner' }}. Hak Cipta Dilindungi Undang-Undang.</p>
                 <p>Built with Laravel & Filament</p>
             </div>
         </div>

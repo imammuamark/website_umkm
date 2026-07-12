@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', ($article->meta_title ?: $article->title) . ' | ' . \App\Models\SiteSetting::get('meta_title_default', 'Aromatica Coffee'))
+@section('title', ($article->meta_title ?: $article->title) . ' | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 @section('meta_description', $article->meta_description ?: $article->excerpt)
 
 @section('content')

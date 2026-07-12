@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $product->name . ' | ' . \App\Models\SiteSetting::get('meta_title_default', 'Aromatica Coffee'))
+@section('title', $product->name . ' | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
 <section class="py-16 bg-white flex-grow">

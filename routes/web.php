@@ -17,3 +17,8 @@ Route::get('/kontak', [PublicController::class, 'kontak'])->name('kontak');
 Route::post('/kontak', [PublicController::class, 'submitKontak'])
     ->middleware('throttle:5,1')
     ->name('kontak.submit');
+
+// Fallback to prevent 405 MethodNotAllowed when login session/token expires
+Route::post('/admin/login', function () {
+    return redirect()->route('filament.admin.auth.login');
+});

@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('Panama Corner')
             ->colors([
                 'primary' => \Illuminate\Support\Facades\Schema::hasTable('site_settings') 
                     ? Color::hex(\App\Models\SiteSetting::get('theme_primary_color', '#0F766E')) 

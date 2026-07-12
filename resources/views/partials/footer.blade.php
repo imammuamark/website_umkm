@@ -18,9 +18,9 @@
             <div class="space-y-5 lg:col-span-4">
                 <div class="flex items-center gap-3">
                     @if($footer['logoUrl'])
-                        <img src="{{ $footer['logoUrl'] }}" alt="Logo {{ $footer['businessName'] }}" class="h-11 w-11 rounded-full object-cover" width="44" height="44" loading="lazy">
+                        <span class="flex h-11 max-w-[92px] shrink-0 items-center"><img src="{{ $footer['logoUrl'] }}" alt="Logo {{ $footer['businessName'] }}" class="block max-h-full w-auto max-w-full object-contain" loading="lazy"></span>
                     @else
-                        <span class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-xs font-extrabold text-white">{{ \Illuminate\Support\Str::of($footer['businessName'])->substr(0, 2)->upper() }}</span>
+                        @include('partials.brand-mark', ['class' => 'h-11 w-11 rounded-xl border border-white/15 bg-white/8 text-white'])
                     @endif
                     <h2 class="text-lg font-extrabold tracking-tight text-white">{{ $footer['businessName'] }}</h2>
                 </div>

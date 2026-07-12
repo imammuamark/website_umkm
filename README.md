@@ -31,7 +31,8 @@ Template ini dapat disesuaikan untuk usaha kuliner, kerajinan, fesyen, jasa prof
 
 ### Admin dashboard
 
-- Dashboard berbasis Filament
+- Dashboard berbasis Filament dengan sistem desain responsif, light/dark mode, dan sidebar collapsible
+- Global command search dengan shortcut `⌘K`/`Ctrl+K`, loading state, serta hasil lintas resource
 - CRUD profil usaha, produk, kategori, artikel, lokasi, dan pesan masuk
 - Galeri multi-gambar produk dengan pengurutan gambar utama
 - Editor artikel visual/HTML, workflow editorial, preview, gambar, dan video
@@ -40,6 +41,7 @@ Template ini dapat disesuaikan untuk usaha kuliner, kerajinan, fesyen, jasa prof
 - Pengelolaan pengguna, role, dan permission
 - Penggantian password dan autentikasi dua faktor
 - Activity log
+- Backup dan migrasi portabel untuk data CMS serta media bertahap
 - Pengaturan tema, SEO, Google Analytics, Meta Pixel, TikTok Pixel, WhatsApp, dan Google Maps
 
 ## Teknologi
@@ -155,6 +157,20 @@ Setelah instalasi, sesuaikan bagian berikut melalui dashboard admin:
 
 Data contoh dari seeder ditujukan untuk pengembangan. Ganti atau hapus data tersebut sebelum aplikasi digunakan oleh usaha baru.
 
+## Backup & Migrasi Antarserver
+
+Menu **Sistem → Backup & Migrasi** menyediakan alur pemindahan konten dari lingkungan lokal ke server produksi:
+
+1. Unduh satu manifest JSON data CMS dan seluruh paket `.umkm-media`.
+2. Siapkan aplikasi tujuan, `.env`, database, migration, akun admin, dan storage link.
+3. Masuk dengan akun admin server tujuan lalu periksa checksum manifest.
+4. Gunakan mode **Gabungkan** untuk migrasi awal yang aman. Mode **Ganti data CMS** hanya digunakan jika konten tujuan memang boleh diganti.
+5. Impor seluruh paket media tanpa membuka atau mengekstraknya, lalu periksa katalog, artikel, halaman, dan menu digital.
+
+Manifest bersifat lintas database dan hanya memuat konten portable. Akun, password, sesi, cache, queue, pesan kontak, activity log, `.env`, `APP_KEY`, token, dan pengaturan yang terindikasi rahasia tidak diekspor. Paket `.umkm-media` menggunakan container ZIP tervalidasi dengan ekstensi khusus agar browser tidak mengekstraknya otomatis. Ukurannya dibatasi sekitar 7 MB per bagian untuk kompatibilitas hosting dengan batas upload rendah; setiap paket memerlukan marker versi dan menjalani validasi path, ekstensi, jumlah, serta ukuran file sebelum dipulihkan.
+
+Simpan hasil ekspor di lokasi privat. Checksum mendeteksi kerusakan atau perubahan file, tetapi bukan pengganti enkripsi maupun tanda tangan digital.
+
 ## Pengujian
 
 Jalankan seluruh test:
@@ -172,6 +188,8 @@ npm run build
 ```
 
 Test suite mencakup route publik, security headers, form kontak, honeypot, akses admin, workflow artikel, media, halaman CMS, katalog, menu digital, footer, WhatsApp, serta validasi embed Google Maps.
+
+Antarmuka admin memanfaatkan aset Vite terpisah di `resources/css/admin.css`. Jalankan `npm run build` setelah mengubah desain dashboard agar manifest produksi memuat stylesheet admin terbaru.
 
 ## Keamanan
 

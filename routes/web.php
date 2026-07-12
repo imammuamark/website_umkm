@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PortableBackupController;
 use App\Http\Controllers\DigitalMenuController;
 use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Route;
@@ -10,6 +11,11 @@ Route::get('/admin/footer-preview', function () {
         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, private')
         ->header('X-Robots-Tag', 'noindex, nofollow');
 })->middleware(['auth', 'can:manage settings'])->name('admin.footer-preview');
+
+Route::prefix('admin/portability')->middleware(['auth', 'can:manage settings'])->group(function (): void {
+    Route::get('/manifest', [PortableBackupController::class, 'manifest'])->name('admin.portability.manifest');
+    Route::get('/media/{part}', [PortableBackupController::class, 'media'])->whereNumber('part')->name('admin.portability.media');
+});
 
 // Public Front-end Routes
 Route::get('/', [PublicController::class, 'home'])->name('home');

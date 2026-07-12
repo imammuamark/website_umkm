@@ -36,8 +36,7 @@ class PublicController extends Controller
 
         $storyImage = $aboutPage?->getFirstMediaUrl('content_image', 'large')
             ?: $aboutPage?->getResolvedHeroUrl()
-            ?: $latestArticles->first()?->getFirstMediaUrl('featured_image', 'large')
-            ?: $latestArticles->first()?->getFirstMediaUrl('featured_image', 'thumb');
+            ?: $latestArticles->first()?->resolvedFeaturedImageUrl('large');
 
         // Stats
         $stats = [
@@ -216,6 +215,14 @@ class PublicController extends Controller
             })
             ->filter()
             ->values();
+        $articleGallery = $article->getMedia('content_images')
+            ->map(fn ($image): array => [
+                'url' => $image->getUrl('content'),
+                'alt' => $image->getCustomProperty('alt', $article->title),
+                'caption' => $image->getCustomProperty('caption', ''),
+            ])
+            ->concat($article->resolvedExternalImages())
+            ->values();
 
         return view('artikel_detail', [
             'article' => $article,
@@ -223,6 +230,7 @@ class PublicController extends Controller
             'articleContent' => $content['html'],
             'tableOfContents' => $content['items'],
             'articleVideos' => $articleVideos,
+            'articleGallery' => $articleGallery,
         ]);
     }
 

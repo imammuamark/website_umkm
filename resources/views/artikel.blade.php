@@ -79,10 +79,10 @@
         @if($articles->isNotEmpty())
             <div class="grid gap-x-7 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
                 @foreach($articles as $article)
-                    @php($thumb = $article->getFirstMediaUrl('featured_image', 'thumb'))
+                    @php($thumb = $article->resolvedFeaturedImageUrl('thumb'))
                     <article class="home-reveal group">
                         <a href="{{ route('artikel.detail', $article->slug) }}" class="block aspect-[4/3] overflow-hidden rounded-[1.35rem] bg-[#17362f]">
-                            @if($thumb)<img src="{{ $thumb }}" alt="{{ $article->title }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" loading="lazy" decoding="async">@else<div class="flex h-full items-center justify-center text-white/25"><svg class="h-14 w-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></div>@endif
+                            @if($thumb)<img src="{{ $thumb }}" alt="{{ $article->featured_image_alt ?: $article->title }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" loading="lazy" decoding="async">@else<div class="flex h-full items-center justify-center text-white/25"><svg class="h-14 w-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></div>@endif
                         </a>
                         <div class="pt-5">
                             <p class="text-[9px] font-bold uppercase tracking-[.18em] text-primary">{{ $article->category?->name ?? 'Cerita' }} · {{ $article->published_at?->translatedFormat('d M Y') }}</p>

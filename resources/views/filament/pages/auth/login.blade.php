@@ -50,31 +50,27 @@
             display: grid !important;
             min-height: 100svh !important;
             place-items: center !important;
-            padding: 32px 20px !important;
+            padding: 74px 20px 32px !important;
         }
 
         .fi-simple-main-ctn {
             display: grid !important;
             width: 100% !important;
-            max-width: 430px !important;
+            max-width: 404px !important;
             place-items: center !important;
         }
 
         .fi-simple-main {
-            position: fixed !important;
+            position: relative !important;
             z-index: 10 !important;
-            top: 50% !important;
-            left: 50% !important;
             width: calc(100vw - 32px) !important;
-            max-width: 430px !important;
-            max-height: calc(100svh - 32px) !important;
+            max-width: 404px !important;
             margin: 0 !important;
-            padding: 42px 36px 38px !important;
-            overflow-x: hidden !important;
-            overflow-y: auto !important;
-            transform: translate(-50%, -50%) !important;
+            padding: 54px 34px 28px !important;
+            overflow: visible !important;
+            transform: none !important;
             border: 1px solid rgba(255, 255, 255, 0.78) !important;
-            border-radius: 26px !important;
+            border-radius: 24px !important;
             background:
                 radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.92), transparent 38%),
                 linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(242, 240, 233, 0.67)) !important;
@@ -91,17 +87,72 @@
             display: none !important;
         }
 
-        .admin-brand-mark {
-            display: inline-flex !important;
-            width: 48px !important;
-            height: 48px !important;
-            align-items: center !important;
-            justify-content: center !important;
-            flex: 0 0 48px !important;
-            border-radius: 999px !important;
-            color: #ffffff !important;
-            background: #2f7d73 !important;
-            box-shadow: 0 9px 22px rgba(47, 125, 115, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.32);
+        .login-stack {
+            display: grid;
+            gap: 24px;
+        }
+
+        .login-intro {
+            position: relative;
+            text-align: center;
+        }
+
+        .login-brand {
+            position: absolute;
+            top: -92px;
+            left: 50%;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateX(-50%);
+        }
+
+        .login-brand__logo {
+            position: relative;
+            display: flex;
+            width: 78px;
+            height: 78px;
+            flex: 0 0 78px;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid rgba(190, 142, 43, 0.42);
+            border-radius: 999px;
+            background:
+                radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 1), rgba(250, 247, 238, 0.98) 58%, rgba(238, 229, 207, 0.98));
+            box-shadow:
+                0 20px 38px rgba(5, 12, 10, 0.2),
+                0 7px 14px rgba(5, 12, 10, 0.1),
+                0 0 0 6px rgba(255, 255, 255, 0.48),
+                0 0 0 7px rgba(185, 135, 34, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.96);
+        }
+
+        .login-brand__logo img {
+            display: block !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            padding: 10px;
+            object-fit: contain !important;
+        }
+
+        .login-title {
+            margin-top: 2px;
+            color: #111615;
+            font-size: 25px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -0.035em;
+        }
+
+        .login-subtitle {
+            margin-top: 8px;
+            color: #596260;
+            font-size: 12px;
+            line-height: 1.6;
         }
 
         .fi-fo-field-wrp {
@@ -176,11 +227,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 9px;
+            gap: 8px;
             color: #3f4947;
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 0.08em;
+            font-size: 8px;
+            font-weight: 650;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
         }
 
@@ -191,14 +242,6 @@
             border-radius: 999px;
             background: var(--login-gold-dark);
             box-shadow: 0 0 0 3px rgba(185, 135, 34, 0.1);
-        }
-
-        .academic-attribution__university {
-            margin-top: 5px;
-            color: #737b79;
-            font-size: 9px;
-            font-weight: 500;
-            letter-spacing: 0.025em;
         }
 
         @media (max-width: 767px) {
@@ -220,13 +263,31 @@
             }
 
             .fi-simple-layout {
-                padding: 24px 16px !important;
+                min-height: 100svh !important;
+                padding: 70px 16px 28px !important;
             }
 
             .fi-simple-main {
-                padding: 34px 24px 30px !important;
+                padding: 52px 24px 26px !important;
                 border-radius: 22px !important;
                 background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(242, 240, 233, 0.84)) !important;
+            }
+
+            .login-brand {
+                top: -90px;
+            }
+
+            .login-title {
+                font-size: 23px;
+            }
+
+            .academic-attribution__meta {
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .academic-attribution__dot {
+                display: none;
             }
         }
 
@@ -238,14 +299,22 @@
         }
     </style>
 
-    <div class="space-y-6">
-        <div class="text-center">
-            <div class="mb-6 inline-flex items-center justify-center gap-3">
-                <span class="admin-brand-mark flex h-12 w-12 items-center justify-center rounded-full bg-[#2f7d73] text-base font-medium text-white">PA</span>
-                <span class="text-lg font-extrabold tracking-tight text-[#121716]">Panama Corner</span>
+    <div class="login-stack">
+        @php
+            $loginProfile = \App\Models\BusinessProfile::first();
+            $loginLogo = $loginProfile?->getFirstMediaUrl('logo');
+            $loginBusinessName = $loginProfile?->business_name ?? 'Panama Corner';
+        @endphp
+        <div class="login-intro">
+            <div class="login-brand">
+                @if($loginLogo)
+                    <span class="login-brand__logo"><img src="{{ $loginLogo }}" alt="Logo {{ $loginBusinessName }}"></span>
+                @else
+                    @include('partials.brand-mark', ['class' => 'login-brand__logo bg-[#2f7d73] text-white'])
+                @endif
             </div>
-            <h1 class="text-2xl font-extrabold tracking-tight text-[#111615] sm:text-[28px]">Admin Portal Access</h1>
-            <p class="mt-2 text-xs leading-5 text-[#4f5856]">Akses khusus untuk administrator terdaftar.</p>
+            <h1 class="login-title">Admin Portal</h1>
+            <p class="login-subtitle">Kelola konten dan operasional website.</p>
         </div>
 
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.before') }}
@@ -263,7 +332,7 @@
 
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.after') }}
 
-        <footer class="academic-attribution border-t border-black/8 pt-5" aria-label="Atribusi proyek">
+        <footer class="academic-attribution border-t border-black/8 pt-4" aria-label="Atribusi proyek">
             <div class="academic-attribution__meta">
                 <span>Proyek Kewirausahaan Kelompok 1</span>
                 <span class="academic-attribution__dot" aria-hidden="true"></span>

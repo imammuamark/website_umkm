@@ -16,8 +16,8 @@
     <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/92 backdrop-blur-xl">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
             <a href="{{ route('digital-menu.index') }}" class="flex min-w-0 items-center gap-3">
-                @if($logo)<img src="{{ $logo }}" alt="Logo {{ $business?->business_name }}" class="h-9 w-9 rounded-full object-cover">
-                @else<span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[11px] font-extrabold text-white" style="background:var(--menu-primary)">{{ strtoupper(substr($business?->business_name ?? 'UM', 0, 2)) }}</span>@endif
+                @if($logo)<span class="flex h-9 max-w-[70px] shrink-0 items-center"><img src="{{ $logo }}" alt="Logo {{ $business?->business_name }}" class="block max-h-full w-auto max-w-full object-contain"></span>
+                @else @include('partials.brand-mark', ['class' => 'h-9 w-9 rounded-[10px] text-white', 'style' => 'background:var(--menu-primary)']) @endif
                 <span class="min-w-0"><strong class="block truncate text-sm font-extrabold">{{ $business?->business_name ?? 'Digital Menu' }}</strong><span class="hidden text-[10px] text-slate-500 sm:block">Digital Menu</span></span>
             </a>
             <a href="{{ route('home') }}" class="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-bold text-slate-600 transition hover:border-slate-300 hover:text-slate-950">Website <span aria-hidden="true">↗</span></a>

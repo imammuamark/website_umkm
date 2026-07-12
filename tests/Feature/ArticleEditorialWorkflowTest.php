@@ -126,6 +126,42 @@ class ArticleEditorialWorkflowTest extends TestCase
             ->assertDontSee('youtube.com.evil.test');
     }
 
+    public function test_article_supports_safe_external_featured_and_gallery_images(): void
+    {
+        [$author, $category] = $this->editorialDependencies();
+        $article = Article::create(array_merge(
+            $this->articleData($author, $category, 'published'),
+            [
+                'slug' => 'artikel-gambar-eksternal',
+                'published_at' => now()->subMinute(),
+                'featured_image_source' => 'url',
+                'featured_image_url' => 'https://images.example.com/featured.jpg',
+                'featured_image_alt' => 'Secangkir kopi di atas meja',
+                'featured_image_credit' => 'Fotografer Contoh',
+                'featured_image_credit_url' => 'https://example.com/photo',
+                'external_images' => [
+                    ['url' => 'https://images.example.com/gallery.jpg', 'alt' => 'Area duduk kafe', 'caption' => 'Area untuk pengunjung.'],
+                    ['url' => 'javascript:alert(1)', 'alt' => 'Tidak aman'],
+                    ['url' => 'http://insecure.example.com/image.jpg', 'alt' => 'Tidak HTTPS'],
+                ],
+            ]
+        ));
+
+        $article->refresh();
+
+        $this->assertSame('https://images.example.com/featured.jpg', $article->resolvedFeaturedImageUrl());
+        $this->assertCount(1, $article->resolvedExternalImages());
+
+        $this->get(route('artikel.detail', $article->slug))
+            ->assertOk()
+            ->assertSee('https://images.example.com/featured.jpg', false)
+            ->assertSee('https://images.example.com/gallery.jpg', false)
+            ->assertSee('Secangkir kopi di atas meja')
+            ->assertSee('Fotografer Contoh')
+            ->assertDontSee('javascript:alert(1)', false)
+            ->assertDontSee('insecure.example.com', false);
+    }
+
     /** @return array{User, ArticleCategory} */
     private function editorialDependencies(): array
     {

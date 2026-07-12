@@ -116,20 +116,24 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div :class="compact ? 'h-16' : 'h-[4.75rem]'" class="flex items-center justify-between transition-all duration-500">
                 <!-- Logo -->
-                <div class="flex-shrink-0">
-                    <a href="{{ route('home') }}" class="flex items-center gap-3">
-                        @php
-                            $logoPath = \App\Models\BusinessProfile::first()?->getFirstMediaUrl('logo');
-                        @endphp
+                <div class="min-w-0 flex-shrink-0">
+                    @php
+                        $headerProfile = \App\Models\BusinessProfile::first();
+                        $logoPath = $headerProfile?->getFirstMediaUrl('logo');
+                        $headerBusinessName = $headerProfile?->business_name ?? 'Panama Corner';
+                    @endphp
+                    <a href="{{ route('home') }}" class="flex min-w-0 items-center gap-3 sm:gap-3.5" aria-label="{{ $headerBusinessName }} — Beranda">
                         @if($logoPath)
-                            <img :class="compact ? 'h-9 w-9 border-primary/20' : 'h-10 w-10 border-white/35'" class="rounded-full object-cover border transition-all duration-500" src="{{ $logoPath }}" alt="Logo {{ \App\Models\BusinessProfile::first()?->business_name ?? 'usaha' }}">
+                            <span :class="compact ? 'h-9' : 'h-10'" class="flex max-w-[76px] shrink-0 items-center transition-all duration-500">
+                                <img src="{{ $logoPath }}" alt="Logo {{ $headerBusinessName }}" class="block max-h-full w-auto max-w-full object-contain transition duration-500" :class="compact ? '' : 'drop-shadow-[0_2px_8px_rgba(0,0,0,.22)]'">
+                            </span>
                         @else
-                            <div :class="compact ? 'h-9 w-9 bg-primary text-sm' : 'h-10 w-10 bg-white/12 border-white/35 text-sm'" class="rounded-full border border-transparent flex items-center justify-center text-white font-bold backdrop-blur transition-all duration-500">
-                                {{ strtoupper(substr(\App\Models\BusinessProfile::first()?->business_name ?? 'A', 0, 2)) }}
-                            </div>
+                            <span :class="compact ? 'h-9 w-9 rounded-[10px] border-primary bg-primary text-white' : 'h-10 w-10 rounded-xl border-white/35 bg-white/10 text-white'" class="inline-flex shrink-0 items-center justify-center border backdrop-blur-md transition-all duration-500" aria-hidden="true">
+                                <svg class="h-[58%] w-[58%]" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 13h14v4.2a7 7 0 0 1-7 7 7 7 0 0 1-7-7V13Z"/><path d="M21.5 15h1.7a3.1 3.1 0 0 1 0 6.2h-2.9M6 26h18"/><path d="M11 5.5c-1.3 1.3 1.3 2.3 0 3.7M16 4.5c-1.5 1.5 1.5 2.5 0 4.2"/></svg>
+                            </span>
                         @endif
-                        <span :class="compact ? 'text-gray-950' : 'text-white'" class="font-bold text-base tracking-[-.02em] font-title transition-colors duration-500 sm:text-lg">
-                            {{ \App\Models\BusinessProfile::first()?->business_name ?? 'Panama Corner' }}
+                        <span :class="compact ? 'text-gray-950' : 'text-white'" class="truncate font-title text-base font-bold tracking-[-.025em] transition-colors duration-500 sm:text-lg">
+                            {{ $headerBusinessName }}
                         </span>
                     </a>
                 </div>

@@ -44,6 +44,14 @@ class SecurityAndRouteTest extends TestCase
         }
     }
 
+    public function test_public_header_uses_visual_brand_mark_instead_of_text_initials(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertDontSee('>PA<', false)
+            ->assertSee('aria-label="Panama Corner — Beranda"', false);
+    }
+
     /**
      * Test that the contact message submission works with validation.
      */
@@ -128,6 +136,11 @@ class SecurityAndRouteTest extends TestCase
         $response->assertSee('Proyek Kewirausahaan Kelompok 1');
         $response->assertSee('Universitas UP45 Yogyakarta');
         $response->assertSee('rel="icon"', false);
+        $response->assertSee('/build/assets/admin-', false);
+        $response->assertSee('Collapse sidebar');
+        $response->assertSee('Buka menu akun');
+        $response->assertSee('Profil & Keamanan', false);
+        $response->assertSee('action="'.route('filament.admin.auth.logout').'"', false);
     }
 
     public function test_admin_article_editor_loads_with_media_workspace(): void
@@ -138,7 +151,21 @@ class SecurityAndRouteTest extends TestCase
             ->get('/admin/articles/create')
             ->assertOk()
             ->assertSee('Ruang Kerja Konten')
-            ->assertSee('Media Artikel');
+            ->assertSee('Media Artikel')
+            ->assertSee('Sumber Gambar Utama')
+            ->assertSee('Galeri dari URL');
+    }
+
+    public function test_admin_article_list_renders_upload_and_url_thumbnails(): void
+    {
+        $admin = User::where('email', 'admin@panamacorner.com')->firstOrFail();
+
+        $response = $this->actingAs($admin)->get('/admin/articles');
+
+        $response->assertOk()
+            ->assertSee('photo-1495474472287-4d71bcdd2085', false)
+            ->assertSee('photo-1442512595331-e89e73853f31', false)
+            ->assertSee('/storage/', false);
     }
 
     public function test_admin_login_displays_academic_attribution(): void

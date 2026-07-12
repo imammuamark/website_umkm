@@ -27,7 +27,13 @@ class Article extends Model implements HasMedia
         'content',
         'editor_mode',
         'featured_image',
+        'featured_image_source',
+        'featured_image_url',
+        'featured_image_alt',
+        'featured_image_credit',
+        'featured_image_credit_url',
         'video_urls',
+        'external_images',
         'excerpt',
         'meta_title',
         'meta_description',
@@ -44,6 +50,7 @@ class Article extends Model implements HasMedia
         'reviewed_at' => 'datetime',
         'reading_time' => 'integer',
         'video_urls' => 'array',
+        'external_images' => 'array',
     ];
 
     protected static function boot()
@@ -56,6 +63,23 @@ class Article extends Model implements HasMedia
             }
 
             $article->content = app(ArticleContentSanitizer::class)->sanitize($article->content);
+            $article->featured_image_source = in_array($article->featured_image_source, ['upload', 'url'], true)
+                ? $article->featured_image_source
+                : 'upload';
+            $article->featured_image_url = self::safeHttpsUrl($article->featured_image_url);
+            $article->featured_image_credit_url = self::safeHttpsUrl($article->featured_image_credit_url);
+            $article->featured_image_alt = Str::limit(trim(strip_tags((string) $article->featured_image_alt)), 180, '');
+            $article->featured_image_credit = Str::limit(trim(strip_tags((string) $article->featured_image_credit)), 120, '');
+            $article->external_images = collect($article->external_images ?? [])
+                ->filter(fn (mixed $image): bool => is_array($image) && filled(self::safeHttpsUrl($image['url'] ?? null)))
+                ->take(12)
+                ->map(fn (array $image): array => [
+                    'url' => self::safeHttpsUrl($image['url'] ?? null),
+                    'alt' => Str::limit(trim(strip_tags((string) ($image['alt'] ?? ''))), 180, ''),
+                    'caption' => Str::limit(trim(strip_tags((string) ($image['caption'] ?? ''))), 240, ''),
+                ])
+                ->values()
+                ->all();
 
             if (empty($article->excerpt) && ! empty($article->content)) {
                 $article->excerpt = Str::limit(strip_tags($article->content), 150);
@@ -163,6 +187,50 @@ class Article extends Model implements HasMedia
     public function publisher()
     {
         return $this->belongsTo(User::class, 'published_by');
+    }
+
+    public function resolvedFeaturedImageUrl(string $conversion = 'large'): ?string
+    {
+        $upload = $this->getFirstMediaUrl('featured_image', $conversion)
+            ?: $this->getFirstMediaUrl('featured_image', 'thumb')
+            ?: $this->getFirstMediaUrl('featured_image');
+        $external = self::safeHttpsUrl($this->featured_image_url);
+
+        return $this->featured_image_source === 'url'
+            ? ($external ?: ($upload ?: null))
+            : ($upload ?: $external);
+    }
+
+    public function resolvedFeaturedImageAbsoluteUrl(string $conversion = 'large'): ?string
+    {
+        $imageUrl = $this->resolvedFeaturedImageUrl($conversion);
+
+        return is_string($imageUrl) && str_starts_with($imageUrl, '/')
+            ? url($imageUrl)
+            : $imageUrl;
+    }
+
+    /** @return array<int, array{url: string, alt: string, caption: string}> */
+    public function resolvedExternalImages(): array
+    {
+        return collect($this->external_images ?? [])
+            ->filter(fn (mixed $image): bool => is_array($image) && filled(self::safeHttpsUrl($image['url'] ?? null)))
+            ->map(fn (array $image): array => [
+                'url' => self::safeHttpsUrl($image['url']) ?? '',
+                'alt' => trim((string) ($image['alt'] ?? '')),
+                'caption' => trim((string) ($image['caption'] ?? '')),
+            ])
+            ->values()
+            ->all();
+    }
+
+    private static function safeHttpsUrl(mixed $url): ?string
+    {
+        if (! is_string($url) || ! filter_var($url, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        return strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https' ? $url : null;
     }
 
     // Scopes

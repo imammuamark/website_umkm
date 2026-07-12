@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -259,9 +260,25 @@ class ArticleResource extends Resource
                             ]),
 
                         Forms\Components\Section::make('Featured Image')
-                            ->description('Rasio yang disarankan 1200 × 630 piksel.')
+                            ->description('Pilih upload lokal atau URL gambar HTTPS. Rasio yang disarankan 1200 × 630 piksel.')
                             ->icon('heroicon-o-photo')
                             ->schema([
+                                Forms\Components\ToggleButtons::make('featured_image_source')
+                                    ->label('Sumber Gambar Utama')
+                                    ->options([
+                                        'upload' => 'Upload File',
+                                        'url' => 'URL HTTPS',
+                                    ])
+                                    ->icons([
+                                        'upload' => 'heroicon-o-arrow-up-tray',
+                                        'url' => 'heroicon-o-link',
+                                    ])
+                                    ->default('upload')
+                                    ->inline()
+                                    ->required()
+                                    ->live()
+                                    ->columnSpanFull(),
+
                                 SpatieMediaLibraryFileUpload::make('featured_image')
                                     ->label('Gambar Utama')
                                     ->collection('featured_image')
@@ -270,7 +287,57 @@ class ArticleResource extends Resource
                                     ->maxSize(5120)
                                     ->imageEditor()
                                     ->responsiveImages()
-                                    ->required(fn (Get $get): bool => in_array($get('workflow_status'), ['scheduled', 'published'], true)),
+                                    ->required(fn (Get $get): bool => $get('featured_image_source') === 'upload' && in_array($get('workflow_status'), ['scheduled', 'published'], true))
+                                    ->visible(fn (Get $get): bool => $get('featured_image_source') !== 'url'),
+
+                                Forms\Components\TextInput::make('featured_image_url')
+                                    ->label('URL Gambar Utama')
+                                    ->placeholder('https://images.example.com/artikel.jpg')
+                                    ->helperText('Wajib HTTPS dan harus mengarah langsung ke file gambar yang dapat diakses publik.')
+                                    ->url()
+                                    ->startsWith('https://')
+                                    ->maxLength(2048)
+                                    ->required(fn (Get $get): bool => $get('featured_image_source') === 'url')
+                                    ->live(onBlur: true)
+                                    ->visible(fn (Get $get): bool => $get('featured_image_source') === 'url'),
+
+                                Forms\Components\Placeholder::make('featured_url_preview')
+                                    ->label('Preview URL')
+                                    ->content(function (Get $get): HtmlString {
+                                        $url = $get('featured_image_url');
+                                        $safe = is_string($url)
+                                            && filter_var($url, FILTER_VALIDATE_URL)
+                                            && strtolower((string) parse_url($url, PHP_URL_SCHEME)) === 'https';
+
+                                        if (! $safe) {
+                                            return new HtmlString('<div class="rounded-xl border border-dashed border-gray-300 p-4 text-xs text-gray-500">Masukkan URL HTTPS yang valid untuk melihat preview.</div>');
+                                        }
+
+                                        return new HtmlString('<div class="overflow-hidden rounded-xl border border-gray-200 bg-gray-100"><img src="'.e($url).'" alt="Preview gambar utama" class="aspect-[16/9] h-auto w-full object-cover" loading="lazy"></div>');
+                                    })
+                                    ->visible(fn (Get $get): bool => $get('featured_image_source') === 'url'),
+
+                                Forms\Components\TextInput::make('featured_image_alt')
+                                    ->label('Teks Alternatif')
+                                    ->placeholder('Jelaskan isi gambar secara singkat')
+                                    ->helperText('Membantu aksesibilitas dan SEO. Hindari frasa seperti “gambar tentang”.')
+                                    ->maxLength(180),
+
+                                Forms\Components\Grid::make(2)
+                                    ->schema([
+                                        Forms\Components\TextInput::make('featured_image_credit')
+                                            ->label('Kredit Foto')
+                                            ->placeholder('Nama fotografer atau sumber')
+                                            ->maxLength(120),
+                                        Forms\Components\TextInput::make('featured_image_credit_url')
+                                            ->label('URL Kredit')
+                                            ->placeholder('https://...')
+                                            ->url()
+                                            ->startsWith('https://')
+                                            ->maxLength(2048),
+                                    ])
+                                    ->visible(fn (Get $get): bool => $get('featured_image_source') === 'url')
+                                    ->columnSpanFull(),
                             ]),
 
                         Forms\Components\Section::make('Media Artikel')
@@ -292,6 +359,36 @@ class ArticleResource extends Resource
                                     ->responsiveImages()
                                     ->panelLayout('grid')
                                     ->helperText('Maksimal 12 gambar, masing-masing 5 MB. Seret kartu untuk mengatur urutan.'),
+
+                                Forms\Components\Repeater::make('external_images')
+                                    ->label('Galeri dari URL')
+                                    ->addActionLabel('Tambahkan URL gambar')
+                                    ->defaultItems(0)
+                                    ->maxItems(12)
+                                    ->reorderable()
+                                    ->collapsible()
+                                    ->itemLabel(fn (array $state): ?string => filled($state['alt'] ?? null) ? $state['alt'] : 'Gambar dari URL')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('url')
+                                            ->label('URL Gambar')
+                                            ->placeholder('https://images.example.com/foto.jpg')
+                                            ->url()
+                                            ->startsWith('https://')
+                                            ->maxLength(2048)
+                                            ->required()
+                                            ->columnSpanFull(),
+                                        Forms\Components\TextInput::make('alt')
+                                            ->label('Teks Alternatif')
+                                            ->placeholder('Jelaskan isi gambar')
+                                            ->maxLength(180)
+                                            ->required(),
+                                        Forms\Components\TextInput::make('caption')
+                                            ->label('Caption')
+                                            ->placeholder('Opsional')
+                                            ->maxLength(240),
+                                    ])
+                                    ->columns(2)
+                                    ->helperText('Gunakan URL HTTPS langsung. Maksimal 12 gambar; urutan dapat diubah dengan drag and drop.'),
 
                                 Forms\Components\Repeater::make('video_urls')
                                     ->label('Video Pendukung')
@@ -325,7 +422,15 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('featured_image')->label('Gambar')->collection('featured_image')->square(),
+                Tables\Columns\ImageColumn::make('resolved_featured_image')
+                    ->label('Gambar')
+                    ->getStateUsing(fn (Article $record): ?string => $record->resolvedFeaturedImageAbsoluteUrl('thumb'))
+                    ->size(52)
+                    ->square()
+                    ->extraImgAttributes([
+                        'class' => 'rounded-lg object-cover ring-1 ring-gray-950/10',
+                        'loading' => 'lazy',
+                    ]),
                 Tables\Columns\TextColumn::make('title')->label('Judul Artikel')->searchable()->sortable()->wrap(),
                 Tables\Columns\TextColumn::make('category.name')->label('Kategori')->sortable(),
                 Tables\Columns\TextColumn::make('author.name')->label('Penulis')->sortable(),

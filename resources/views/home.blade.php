@@ -149,7 +149,7 @@
             <div class="grid gap-8 lg:grid-cols-12 lg:gap-12">
                 <article class="home-reveal group lg:col-span-7">
                     <a href="{{ route('artikel.detail', $leadArticle->slug) }}" class="block aspect-[16/10] overflow-hidden rounded-[1.5rem] bg-[#16352e]">
-                        @if($leadArticle->getFirstMediaUrl('featured_image', 'large') ?: $leadArticle->getFirstMediaUrl('featured_image', 'thumb'))<img src="{{ $leadArticle->getFirstMediaUrl('featured_image', 'large') ?: $leadArticle->getFirstMediaUrl('featured_image', 'thumb') }}" alt="{{ $leadArticle->title }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]" loading="lazy" decoding="async">@endif
+                        @if($leadArticle->resolvedFeaturedImageUrl('large'))<img src="{{ $leadArticle->resolvedFeaturedImageUrl('large') }}" alt="{{ $leadArticle->featured_image_alt ?: $leadArticle->title }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]" loading="lazy" decoding="async">@endif
                     </a>
                     <p class="mt-6 text-[10px] font-bold uppercase tracking-[.18em] text-primary">{{ $leadArticle->category?->name ?? 'Cerita' }} · {{ $leadArticle->published_at?->translatedFormat('d M Y') }}</p>
                     <h3 class="mt-3 text-2xl font-semibold leading-tight tracking-[-.03em] text-[#10251f] sm:text-3xl"><a href="{{ route('artikel.detail', $leadArticle->slug) }}" class="transition hover:text-primary">{{ $leadArticle->title }}</a></h3>
@@ -159,7 +159,7 @@
                     @foreach($sideArticles as $article)
                         <article class="home-reveal group grid grid-cols-[116px_1fr] gap-5 border-b border-[#d4d0c5] py-6 first:pt-0 sm:grid-cols-[160px_1fr]">
                             <a href="{{ route('artikel.detail', $article->slug) }}" class="aspect-square overflow-hidden rounded-xl bg-[#16352e]">
-                                @if($article->getFirstMediaUrl('featured_image', 'thumb'))<img src="{{ $article->getFirstMediaUrl('featured_image', 'thumb') }}" alt="{{ $article->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">@endif
+                                @if($article->resolvedFeaturedImageUrl('thumb'))<img src="{{ $article->resolvedFeaturedImageUrl('thumb') }}" alt="{{ $article->featured_image_alt ?: $article->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">@endif
                             </a>
                             <div class="self-center"><p class="text-[9px] font-bold uppercase tracking-[.16em] text-primary">{{ $article->category?->name ?? 'Cerita' }}</p><h3 class="mt-2 text-base font-semibold leading-6 text-[#10251f] sm:text-lg"><a href="{{ route('artikel.detail', $article->slug) }}" class="transition hover:text-primary">{{ $article->title }}</a></h3><p class="mt-3 text-[10px] text-[#7c8581]">{{ $article->reading_time ?? 1 }} menit baca</p></div>
                         </article>

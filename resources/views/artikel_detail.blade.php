@@ -2,6 +2,7 @@
 
 @section('title', ($article->meta_title ?: $article->title) . ' | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 @section('meta_description', $article->meta_description ?: $article->excerpt)
+@section('og_image', $article->resolvedFeaturedImageUrl('large') ?: asset('images/og-default.jpg'))
 
 @section('content')
 @include('partials.page_hero', [
@@ -69,10 +70,16 @@
             </aside>
 
             <main class="min-w-0 space-y-7">
-                @php($largeImage = $article->getFirstMediaUrl('featured_image', 'large'))
+                @php($largeImage = $article->resolvedFeaturedImageUrl('large'))
                 @if($largeImage)
                     <figure class="home-reveal overflow-hidden rounded-[1.75rem] border border-white bg-slate-100 shadow-[0_20px_60px_rgba(16,37,31,.09)]">
-                        <img src="{{ $largeImage }}" alt="{{ $article->title }}" width="1200" height="630" fetchpriority="high" class="aspect-[16/9] h-auto w-full object-cover">
+                        <img src="{{ $largeImage }}" alt="{{ $article->featured_image_alt ?: $article->title }}" width="1200" height="630" fetchpriority="high" class="aspect-[16/9] h-auto w-full object-cover">
+                        @if($article->featured_image_credit)
+                            <figcaption class="border-t border-slate-100 bg-white px-5 py-3 text-[10px] text-slate-500">
+                                Sumber:
+                                @if($article->featured_image_credit_url)<a href="{{ $article->featured_image_credit_url }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-primary hover:underline">{{ $article->featured_image_credit }}</a>@else<span>{{ $article->featured_image_credit }}</span>@endif
+                            </figcaption>
+                        @endif
                     </figure>
                 @endif
 
@@ -80,17 +87,17 @@
                     {!! $articleContent !!}
                 </article>
 
-                @php($gallery = $article->getMedia('content_images'))
-                @if($gallery->isNotEmpty())
+                @if($articleGallery->isNotEmpty())
                     <section aria-labelledby="article-gallery-title" class="rounded-[28px] border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8">
                         <div class="mb-6">
                             <p class="text-xs font-bold uppercase tracking-[0.16em] text-primary">Dokumentasi</p>
                             <h2 id="article-gallery-title" class="mt-1 font-title text-2xl font-extrabold text-slate-950">Galeri artikel</h2>
                         </div>
                         <div class="grid gap-4 sm:grid-cols-2">
-                            @foreach($gallery as $image)
-                                <figure class="overflow-hidden rounded-2xl bg-slate-100 {{ $loop->first && $gallery->count() % 2 === 1 ? 'sm:col-span-2' : '' }}">
-                                    <img src="{{ $image->getUrl('content') }}" alt="{{ $image->getCustomProperty('alt', $article->title) }}" width="1440" height="960" loading="lazy" decoding="async" class="aspect-[3/2] h-full w-full object-cover transition duration-500 hover:scale-[1.02]">
+                            @foreach($articleGallery as $image)
+                                <figure class="overflow-hidden rounded-2xl bg-slate-100 {{ $loop->first && $articleGallery->count() % 2 === 1 ? 'sm:col-span-2' : '' }}">
+                                    <img src="{{ $image['url'] }}" alt="{{ $image['alt'] ?: $article->title }}" width="1440" height="960" loading="lazy" decoding="async" class="aspect-[3/2] h-auto w-full object-cover transition duration-500 hover:scale-[1.02]">
+                                    @if($image['caption'])<figcaption class="bg-white px-4 py-3 text-xs leading-5 text-slate-500">{{ $image['caption'] }}</figcaption>@endif
                                 </figure>
                             @endforeach
                         </div>

@@ -1,6 +1,16 @@
-# Panama Corner — Website Profil & Katalog UMKM
+# Website Profil & Katalog Digital UMKM
 
-Website company profile, katalog produk, jurnal edukasi, lokasi cabang, dan lead capture untuk UMKM Panama Corner. Aplikasi dilengkapi CMS berbasis Filament agar konten, pengguna, tampilan, SEO, serta integrasi pemasaran dapat dikelola tanpa mengubah kode.
+Template website company profile, katalog produk, artikel, lokasi cabang, dan lead capture untuk berbagai jenis UMKM. Aplikasi dilengkapi CMS berbasis Filament agar identitas usaha, konten, pengguna, tampilan, SEO, serta integrasi pemasaran dapat dikelola tanpa mengubah kode.
+
+Template ini dapat disesuaikan untuk usaha kuliner, kerajinan, fesyen, jasa profesional, retail, agribisnis, industri kreatif, dan kebutuhan profil bisnis lainnya.
+
+## Tujuan Template
+
+- Menyediakan fondasi website UMKM yang siap dikembangkan
+- Memisahkan pengelolaan konten dari kode aplikasi
+- Mendukung identitas brand dan katalog yang berbeda
+- Menyediakan alur promosi hingga konversi melalui WhatsApp dan form kontak
+- Menjaga struktur aplikasi tetap modular, responsif, dan mudah dipelihara
 
 ## Fitur Utama
 
@@ -87,7 +97,7 @@ composer run dev
 Pastikan nilai berikut dikonfigurasi sesuai lingkungan:
 
 ```dotenv
-APP_NAME="Panama Corner"
+APP_NAME="Nama Usaha"
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://example.com
@@ -95,7 +105,7 @@ APP_URL=https://example.com
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=panama_corner
+DB_DATABASE=website_umkm
 DB_USERNAME=database_user
 DB_PASSWORD=strong_database_password
 
@@ -104,6 +114,21 @@ SESSION_SAME_SITE=lax
 ```
 
 Jangan menyimpan `.env`, token, password, backup, atau kredensial produksi ke repository.
+
+## Kustomisasi untuk UMKM Baru
+
+Setelah instalasi, sesuaikan bagian berikut melalui dashboard admin:
+
+1. Nama usaha, deskripsi, visi, misi, dan tahun berdiri
+2. Logo, favicon, warna primer, warna sekunder, dan font
+3. Produk, kategori, harga, stok, deskripsi, serta galeri
+4. Artikel, kategori artikel, dan metadata SEO
+5. Lokasi, nomor telepon, jam operasional, dan Google Maps
+6. Nomor WhatsApp dan template pesan pemesanan
+7. Email, media sosial, legalitas, serta informasi kontak
+8. Google Analytics, Meta Pixel, dan integrasi pemasaran lain jika digunakan
+
+Data contoh dari seeder ditujukan untuk pengembangan. Ganti atau hapus data tersebut sebelum aplikasi digunakan oleh usaha baru.
 
 ## Pengujian
 

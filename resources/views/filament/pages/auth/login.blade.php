@@ -1,113 +1,39 @@
-<!-- Inject Tailwind CSS CDN to compile custom classes on guest page -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-    tailwind.config = {
-        theme: {
-            extend: {
-                colors: {
-                    primary: {
-                        50: '#f0fdfa',
-                        100: '#ccfbf1',
-                        200: '#99f6e4',
-                        300: '#5eead4',
-                        400: '#2dd4bf',
-                        500: '#14b8a6',
-                        600: '#0d9488',
-                        700: '#0f766e',
-                        800: '#115e59',
-                        900: '#134e4a',
-                        950: '#042f2e',
-                    }
-                },
-                fontFamily: {
-                    sans: ['Inter', 'sans-serif'],
-                    title: ['Plus Jakarta Sans', 'sans-serif'],
-                }
-            }
-        }
-    }
-</script>
-
-<div class="min-h-screen flex flex-col items-center justify-center bg-slate-50/60 px-4 font-sans relative overflow-hidden">
-    <!-- Ambient professional lighting effects in the background (light theme) -->
-    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-teal-500/5 to-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="absolute -top-40 -right-40 w-96 h-96 bg-teal-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-    <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-
-    <!-- Fine grid pattern to add luxury texture (light theme) -->
-    <div class="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40 pointer-events-none"></div>
-
-    <div class="w-full max-w-[440px] space-y-8 relative z-10">
-        <!-- Logo & Branding Header -->
-        <div class="text-center space-y-4">
-            <!-- Elegant crisp white logo card with fine border -->
-            <div class="relative inline-flex items-center justify-center p-[1px] rounded-2xl bg-gradient-to-tr from-teal-500 via-slate-100 to-amber-500/40 shadow-md">
-                <div class="h-12 w-12 rounded-[15px] bg-white flex items-center justify-center font-black text-teal-800 text-base tracking-wider border border-slate-50">
-                    PC
-                </div>
+<x-filament-panels::page.simple>
+    <x-slot name="heading">
+        <div class="space-y-4 text-center">
+            <!-- Elegant Brand Logo Box -->
+            <div class="inline-flex h-12 w-12 rounded-2xl bg-teal-800 flex items-center justify-center font-extrabold text-white text-lg shadow-md border border-teal-700/20 mx-auto">
+                PC
             </div>
-            <div class="space-y-1">
-                <h1 class="text-xs font-bold tracking-[0.25em] text-teal-800 uppercase font-sans">
-                    Panama Corner
-                </h1>
-            </div>
+            <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white font-title">
+                Panama Corner
+            </h1>
         </div>
+    </x-slot>
 
-        <!-- Crisp Professional Login Card -->
-        <div class="bg-white border border-slate-100 rounded-[32px] p-8 sm:p-10 shadow-[0_20px_50px_rgba(15,118,110,0.06)] space-y-6">
-            <div class="space-y-1.5 text-center">
-                <h2 class="text-xl font-bold text-slate-900 tracking-tight font-title">
-                    Masuk ke Sistem
-                </h2>
-                <p class="text-xs text-slate-400">
-                    Masukkan akun administrator Anda untuk melanjutkan.
-                </p>
-            </div>
-
-            <!-- Injected custom style blocks to override inputs to look light-theme luxury -->
-            <style>
-                .fi-fo-text-input input {
-                    background-color: #ffffff !important;
-                    border-color: #cbd5e1 !important;
-                    color: #0f172a !important;
-                    border-radius: 12px !important;
-                    transition: all 0.2s ease-in-out !important;
-                }
-                .fi-fo-text-input input:focus {
-                    border-color: #0f766e !important;
-                    box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.1) !important;
-                }
-                .fi-btn {
-                    border-radius: 12px !important;
-                    background-color: #0f766e !important;
-                    transition: all 0.2s ease-in-out !important;
-                }
-                .fi-btn:hover {
-                    background-color: #115e59 !important;
-                }
-            </style>
-
-            {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.before') }}
-
-            <x-filament-panels::form wire:submit="authenticate">
-                {{ $this->form }}
-
-                <div class="pt-2">
-                    <x-filament-panels::form.actions
-                        :actions="$this->getCachedFormActions()"
-                        :full-width="$this->hasFullWidthFormActions()"
-                    />
-                </div>
-            </x-filament-panels::form>
-
-            {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.after') }}
-        </div>
-        
-        <!-- Footer -->
-        <div class="text-center">
-            <p class="text-[10px] text-slate-400 tracking-wider">
-                &copy; {{ date('Y') }} Panama Corner. Hak Cipta Dilindungi.
+    <div class="space-y-6">
+        <div class="space-y-1 text-center">
+            <h2 class="text-lg font-semibold text-gray-950 dark:text-white">
+                Masuk ke Sistem
+            </h2>
+            <p class="text-xs text-slate-400 dark:text-slate-500">
+                Gunakan email dan kata sandi administrator Anda.
             </p>
         </div>
+
+        {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.before') }}
+
+        <x-filament-panels::form wire:submit="authenticate">
+            {{ $this->form }}
+
+            <div class="pt-2">
+                <x-filament-panels::form.actions
+                    :actions="$this->getCachedFormActions()"
+                    :full-width="$this->hasFullWidthFormActions()"
+                />
+            </div>
+        </x-filament-panels::form>
+
+        {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.after') }}
     </div>
-</div>
+</x-filament-panels::page.simple>

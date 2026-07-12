@@ -3,7 +3,9 @@
 @section('title', $product->name . ' | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
-<section class="py-16 bg-white flex-grow">
+@include('partials.page_hero', ['eyebrow' => $product->category?->name ?? 'Katalog Panama Corner', 'title' => $product->name, 'subtitle' => 'Detail produk, ketersediaan, dan cara pemesanan dari koleksi pilihan Panama Corner.'])
+
+<section class="public-page-content py-20 bg-[#f7f8f7] flex-grow">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Product Grid Details -->
@@ -14,7 +16,7 @@
             <!-- Gallery Panel -->
             <div class="space-y-4">
                 <!-- Large active image display -->
-                <div class="aspect-square bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 flex items-center justify-center p-8 relative">
+                <div class="premium-surface aspect-square bg-white rounded-3xl overflow-hidden border border-gray-100 flex items-center justify-center p-8 relative">
                     <img :src="activeImage" alt="{{ $product->name }}" class="object-contain max-h-full max-w-full rounded-2xl transform hover:scale-105 transition duration-300" />
                 </div>
                 
@@ -39,7 +41,7 @@
             </div>
 
             <!-- Details Panel -->
-            <div class="flex flex-col justify-between py-2">
+            <div class="premium-surface flex flex-col justify-between rounded-3xl bg-white p-7 sm:p-9">
                 <div class="space-y-6">
                     <span class="inline-flex items-center gap-x-1.5 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
                         {{ $product->category->name }}
@@ -105,7 +107,7 @@
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($relatedProducts as $relProduct)
-                        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition duration-300 flex flex-col h-full group">
+                        <div class="premium-product-card bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition duration-300 flex flex-col h-full group">
                             <div class="aspect-square bg-gray-50 relative overflow-hidden flex items-center justify-center">
                                 @php
                                     $relThumb = $relProduct->getFirstMediaUrl('gallery', 'thumb');

@@ -24,7 +24,7 @@ class PublicController extends Controller
         $featuredProducts = Product::featured()->take(3)->get();
         $bestsellers = Product::bestseller()->take(4)->get();
         $latestArticles = Article::published()->latest('published_at')->take(3)->get();
-        
+
         // Stats
         $stats = [
             'founded_year' => $profile ? $profile->founded_year : 2021,
@@ -41,7 +41,15 @@ class PublicController extends Controller
     public function profil()
     {
         $profile = BusinessProfile::first();
-        return view('profil', compact('profile'));
+        $profileStats = [
+            'years' => $profile?->founded_year
+                ? max(1, now()->year - (int) $profile->founded_year)
+                : null,
+            'products' => Product::count(),
+            'locations' => Location::count(),
+        ];
+
+        return view('profil', compact('profile', 'profileStats'));
     }
 
     /**
@@ -49,13 +57,18 @@ class PublicController extends Controller
      */
     public function katalog(Request $request)
     {
-        $categories = ProductCategory::whereNull('parent_id')->with('children')->get();
-        
+        $categories = ProductCategory::whereNull('parent_id')
+            ->with(['children' => fn ($query) => $query->withCount('products')])
+            ->withCount('products')
+            ->orderBy('name')
+            ->get();
+
         $query = Product::query()->with('category');
 
         // Apply filters
         if ($request->filled('q')) {
-            $query->where('name', 'like', '%' . $request->input('q') . '%');
+            $search = mb_substr(trim((string) $request->input('q')), 0, 100);
+            $query->where('name', 'like', '%'.$search.'%');
         }
 
         if ($request->filled('category')) {
@@ -68,12 +81,12 @@ class PublicController extends Controller
             }
         }
 
-        if ($request->filled('min_price')) {
-            $query->where('price', '>=', $request->input('min_price'));
+        if ($request->filled('min_price') && is_numeric($request->input('min_price'))) {
+            $query->where('price', '>=', max(0, (float) $request->input('min_price')));
         }
 
-        if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->input('max_price'));
+        if ($request->filled('max_price') && is_numeric($request->input('max_price'))) {
+            $query->where('price', '<=', max(0, (float) $request->input('max_price')));
         }
 
         // Sorting
@@ -94,7 +107,7 @@ class PublicController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('partials.product_grid', compact('products'))->render(),
-                'pagination' => view('partials.pagination', compact('products'))->render()
+                'pagination' => view('partials.pagination', compact('products'))->render(),
             ]);
         }
 
@@ -107,7 +120,7 @@ class PublicController extends Controller
     public function produkDetail($slug)
     {
         $product = Product::where('slug', $slug)->firstOrFail();
-        
+
         // Increment views count safely
         $product->increment('views_count');
 
@@ -118,9 +131,9 @@ class PublicController extends Controller
 
         $whatsappNumber = SiteSetting::get('whatsapp_number', '6281234567890');
         $whatsappTemplate = SiteSetting::get('whatsapp_text_template', 'Halo Admin, saya tertarik dengan produk {product_name}');
-        
+
         $whatsappText = str_replace('{product_name}', $product->name, $whatsappTemplate);
-        $whatsappUrl = 'https://wa.me/' . $whatsappNumber . '?text=' . urlencode($whatsappText);
+        $whatsappUrl = 'https://wa.me/'.$whatsappNumber.'?text='.urlencode($whatsappText);
 
         return view('produk_detail', compact('product', 'relatedProducts', 'whatsappUrl'));
     }
@@ -134,8 +147,8 @@ class PublicController extends Controller
         $query = Article::published()->with(['category', 'author']);
 
         if ($request->filled('q')) {
-            $query->where('title', 'like', '%' . $request->input('q') . '%')
-                ->orWhere('content', 'like', '%' . $request->input('q') . '%');
+            $query->where('title', 'like', '%'.$request->input('q').'%')
+                ->orWhere('content', 'like', '%'.$request->input('q').'%');
         }
 
         if ($request->filled('category')) {
@@ -170,9 +183,50 @@ class PublicController extends Controller
      */
     public function lokasi()
     {
-        $locations = Location::all();
-        $mapsEmbed = SiteSetting::get('google_maps_embed');
-        return view('lokasi', compact('locations', 'mapsEmbed'));
+        $locations = Location::orderBy('name')->get();
+        $mapsEmbedUrl = $this->trustedGoogleMapsEmbedUrl(
+            SiteSetting::get('google_maps_embed')
+        );
+
+        return view('lokasi', compact('locations', 'mapsEmbedUrl'));
+    }
+
+    /**
+     * Extract a trusted Google Maps embed URL without rendering admin-provided HTML.
+     */
+    private function trustedGoogleMapsEmbedUrl(?string $embed): ?string
+    {
+        if (blank($embed)) {
+            return null;
+        }
+
+        $candidate = trim(html_entity_decode($embed, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+        if (str_starts_with($candidate, '<')) {
+            if (! preg_match('/\bsrc\s*=\s*["\']([^"\']+)["\']/i', $candidate, $matches)) {
+                return null;
+            }
+
+            $candidate = $matches[1];
+        }
+
+        if (! filter_var($candidate, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        $parts = parse_url($candidate);
+        $host = strtolower($parts['host'] ?? '');
+        $path = $parts['path'] ?? '';
+
+        $trustedHosts = ['www.google.com', 'google.com', 'maps.google.com'];
+
+        if (($parts['scheme'] ?? '') !== 'https'
+            || ! in_array($host, $trustedHosts, true)
+            || ! str_starts_with($path, '/maps/embed')) {
+            return null;
+        }
+
+        return $candidate;
     }
 
     /**
@@ -214,7 +268,7 @@ class PublicController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Pesan Anda berhasil dikirim. Tim kami akan segera menghubungi Anda!'
+            'message' => 'Pesan Anda berhasil dikirim. Tim kami akan segera menghubungi Anda!',
         ]);
     }
 }

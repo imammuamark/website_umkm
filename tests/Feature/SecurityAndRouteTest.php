@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Article;
-use App\Models\ArticleCategory;
-use App\Models\Product;
-use App\Models\ProductCategory;
+use App\Models\BusinessProfile;
+use App\Models\SiteSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -32,7 +30,7 @@ class SecurityAndRouteTest extends TestCase
         foreach ($routes as $route) {
             $response = $this->get($route);
             $response->assertStatus(200);
-            
+
             // Check that security headers middleware works
             $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
             $response->assertHeader('X-Content-Type-Options', 'nosniff');
@@ -52,7 +50,7 @@ class SecurityAndRouteTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-                 ->assertJsonStructure(['message']);
+            ->assertJsonStructure(['message']);
 
         $this->assertDatabaseHas('contact_messages', [
             'name' => 'John Doe',
@@ -86,9 +84,53 @@ class SecurityAndRouteTest extends TestCase
 
         // Act as admin and visit Filament dashboard custom page MyProfile
         $response = $this->actingAs($admin)
-                         ->get('/admin/my-profile');
+            ->get('/admin/my-profile');
 
         $response->assertStatus(200);
         $response->assertSee('Profil Saya');
+    }
+
+    public function test_location_page_rejects_untrusted_map_embed_html(): void
+    {
+        SiteSetting::set(
+            'google_maps_embed',
+            '<iframe src="https://evil.example/collect"></iframe><script>alert(1)</script>'
+        );
+
+        $response = $this->get(route('lokasi'));
+
+        $response->assertOk()
+            ->assertDontSee('evil.example', false)
+            ->assertSee('Peta sedang diperbarui');
+    }
+
+    public function test_location_page_accepts_trusted_google_maps_embed_url(): void
+    {
+        SiteSetting::set(
+            'google_maps_embed',
+            '<iframe src="https://www.google.com/maps/embed?pb=test"></iframe>'
+        );
+
+        $this->get(route('lokasi'))
+            ->assertOk()
+            ->assertSee('https://www.google.com/maps/embed?pb=test', false)
+            ->assertSee('title="Peta lokasi Panama Corner"', false);
+    }
+
+    public function test_profile_page_handles_partial_legal_document_data(): void
+    {
+        $profile = BusinessProfile::firstOrFail();
+        $profile->update([
+            'legal_docs' => [
+                ['name' => 'Dokumen Uji'],
+                ['number' => 'Tanpa nama harus diabaikan'],
+                null,
+            ],
+        ]);
+
+        $this->get(route('profil'))
+            ->assertOk()
+            ->assertSee('Dokumen Uji')
+            ->assertDontSee('Tanpa nama harus diabaikan');
     }
 }

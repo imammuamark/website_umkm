@@ -4,18 +4,16 @@
 @section('meta_description', $article->meta_description ?: $article->excerpt)
 
 @section('content')
-<section class="py-16 bg-white flex-grow">
+@include('partials.page_hero', ['eyebrow' => $article->category?->name ?? 'Jurnal Panama Corner', 'title' => $article->title, 'subtitle' => $article->excerpt])
+
+<section class="public-page-content py-20 bg-[#f7f8f7] flex-grow">
     <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         <!-- Category & Title -->
-        <div class="space-y-4 text-center">
+        <div class="premium-surface space-y-4 rounded-2xl bg-white p-6 text-center">
             <span class="inline-flex items-center gap-x-1.5 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
                 {{ $article->category->name }}
             </span>
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 font-title tracking-tight leading-tight">
-                {{ $article->title }}
-            </h1>
-            
             <!-- Metadata -->
             <div class="flex items-center justify-center gap-6 text-xs text-gray-500 pt-2">
                 <span class="flex items-center gap-1.5">
@@ -43,7 +41,7 @@
         @endif
 
         <!-- Content Area -->
-        <div class="prose-custom max-w-none text-gray-700 leading-relaxed text-base sm:text-lg pt-4 space-y-6">
+        <div class="premium-surface prose-custom max-w-none rounded-3xl bg-white p-7 text-base leading-relaxed text-gray-700 sm:p-10 sm:text-lg space-y-6">
             {!! $article->content !!}
         </div>
 
@@ -99,7 +97,7 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     @foreach($relatedArticles as $relArticle)
-                        <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition duration-300 flex flex-col h-full group">
+                        <div class="premium-product-card bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition duration-300 flex flex-col h-full group">
                             <div class="aspect-video bg-gray-50 relative overflow-hidden flex items-center justify-center">
                                 @php
                                     $relThumb = $relArticle->getFirstMediaUrl('featured_image', 'thumb');

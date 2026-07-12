@@ -1,81 +1,217 @@
 <x-filament-panels::page.simple>
-    <!-- Elegant Inline Styles for Premium Light Theme Overrides -->
     <style>
+        :root {
+            --login-gold: #d9a936;
+            --login-gold-dark: #b98722;
+            --login-ink: #101615;
+            --login-teal: #2f7d73;
+        }
+
+        html,
         body {
-            background-color: #f8fafc !important;
-            background-image: radial-gradient(ellipse 60% 50% at 50% 50%, #f0fdfa 0%, #f8fafc 100%) !important;
+            min-height: 100%;
+        }
+
+        body {
+            background-color: #f4f1e9 !important;
+            background-image: linear-gradient(90deg, #f4f1e9 0%, #faf9f5 100%) !important;
+        }
+
+        body::before {
+            position: fixed;
+            z-index: 0;
+            inset: 0 0 0 50%;
+            content: '';
+            opacity: 0.46;
+            background-image:
+                linear-gradient(135deg, transparent 46%, rgba(58, 65, 62, 0.1) 47%, rgba(58, 65, 62, 0.1) 49%, transparent 50%),
+                linear-gradient(45deg, transparent 46%, rgba(58, 65, 62, 0.07) 47%, rgba(58, 65, 62, 0.07) 49%, transparent 50%);
+            background-size: 72px 72px;
+            pointer-events: none;
+        }
+
+        body::after {
+            position: fixed;
+            z-index: 0;
+            inset: 0 50% 0 0;
+            content: '';
+            background-image:
+                linear-gradient(90deg, rgba(2, 7, 6, 0.25), rgba(2, 7, 6, 0.04)),
+                url("{{ asset('images/panama-roastery-hero.png') }}");
+            background-position: center, center;
+            background-repeat: no-repeat;
+            background-size: cover, cover;
+            pointer-events: none;
+        }
+
+        .fi-simple-layout {
+            position: relative !important;
+            z-index: 1 !important;
+            display: grid !important;
+            min-height: 100svh !important;
+            place-items: center !important;
+            padding: 32px 20px !important;
+        }
+
+        .fi-simple-main-ctn {
+            display: grid !important;
+            width: 100% !important;
+            max-width: 430px !important;
+            place-items: center !important;
         }
 
         .fi-simple-main {
-            border-radius: 28px !important;
-            border: 1px solid #e2e8f0 !important;
-            background-color: #ffffff !important;
-            box-shadow: 0 20px 40px -15px rgba(15, 118, 110, 0.07), 0 1px 3px rgba(0, 0, 0, 0.01) !important;
-            padding: 40px !important;
+            position: fixed !important;
+            z-index: 10 !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: calc(100vw - 32px) !important;
+            max-width: 430px !important;
+            max-height: calc(100svh - 32px) !important;
+            margin: 0 !important;
+            padding: 42px 36px 38px !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            transform: translate(-50%, -50%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.78) !important;
+            border-radius: 26px !important;
+            background:
+                radial-gradient(circle at 16% 0%, rgba(255, 255, 255, 0.92), transparent 38%),
+                linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(242, 240, 233, 0.67)) !important;
+            box-shadow:
+                0 32px 80px rgba(5, 12, 10, 0.25),
+                0 10px 28px rgba(5, 12, 10, 0.14),
+                inset 0 1px 0 rgba(255, 255, 255, 0.92),
+                inset 0 -1px 0 rgba(255, 255, 255, 0.48) !important;
+            backdrop-filter: blur(30px) saturate(155%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(155%) !important;
         }
 
-        /* High-end form inputs styling */
-        .fi-fo-text-input input {
-            background-color: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            color: #0f172a !important;
-            border-radius: 12px !important;
-            font-size: 14px !important;
-            transition: all 0.2s ease-in-out !important;
+        .fi-simple-header {
+            display: none !important;
         }
 
-        .fi-fo-text-input input:focus {
-            border-color: #0f766e !important;
-            box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.08) !important;
+        .admin-brand-mark {
+            display: inline-flex !important;
+            width: 48px !important;
+            height: 48px !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex: 0 0 48px !important;
+            border-radius: 999px !important;
+            color: #ffffff !important;
+            background: #2f7d73 !important;
+            box-shadow: 0 9px 22px rgba(47, 125, 115, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.32);
         }
 
-        /* Primary action button (teal with hover transition effects) */
-        .fi-btn {
-            background-color: #0f766e !important;
-            border-radius: 12px !important;
-            font-weight: 600 !important;
-            font-size: 14px !important;
-            transition: all 0.2s ease-in-out !important;
+        .fi-fo-field-wrp {
+            gap: 7px !important;
         }
 
-        .fi-btn:hover {
-            background-color: #115e59 !important;
-            transform: translateY(-0.5px) !important;
-            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.12) !important;
-        }
-
-        /* Form labels */
+        .fi-fo-field-wrp-label label,
         .fi-fo-field-label {
-            font-weight: 600 !important;
-            color: #334155 !important;
-            font-size: 13px !important;
+            color: #26312f !important;
+            font-size: 12px !important;
+            font-weight: 700 !important;
+        }
+
+        .fi-input-wrp {
+            min-height: 48px !important;
+            overflow: hidden !important;
+            border: 1px solid rgba(196, 160, 71, 0.54) !important;
+            border-radius: 10px !important;
+            background: rgba(255, 255, 255, 0.88) !important;
+            box-shadow: 0 5px 16px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+            transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease !important;
+        }
+
+        .fi-input-wrp:focus-within {
+            border-color: var(--login-gold) !important;
+            box-shadow: 0 0 0 3px rgba(217, 169, 54, 0.16), 0 8px 22px rgba(15, 23, 42, 0.08) !important;
+            transform: translateY(-1px);
+        }
+
+        .fi-input-wrp input {
+            color: var(--login-ink) !important;
+            background: transparent !important;
+            font-size: 14px !important;
+        }
+
+        .fi-input-wrp input::placeholder {
+            color: #7b817f !important;
+        }
+
+        .fi-btn.fi-color-primary {
+            min-height: 48px !important;
+            border: 1px solid rgba(255, 255, 255, 0.32) !important;
+            border-radius: 10px !important;
+            color: #17140d !important;
+            background: linear-gradient(105deg, #e6b84b, #d39b27) !important;
+            box-shadow: 0 11px 24px rgba(185, 135, 34, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+            font-size: 14px !important;
+            font-weight: 800 !important;
+            transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease !important;
+        }
+
+        .fi-btn.fi-color-primary:hover {
+            filter: brightness(1.04) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 15px 30px rgba(185, 135, 34, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.44) !important;
+        }
+
+        .fi-checkbox-input:checked {
+            background-color: var(--login-teal) !important;
+        }
+
+        .fi-link {
+            color: var(--login-teal) !important;
+        }
+
+        @media (max-width: 767px) {
+            body {
+                background: #101715 !important;
+            }
+
+            body::before {
+                display: none;
+            }
+
+            body::after {
+                inset: 0;
+                background-image:
+                    linear-gradient(rgba(3, 8, 7, 0.62), rgba(3, 8, 7, 0.72)),
+                    url("{{ asset('images/panama-roastery-hero.png') }}");
+                background-position: center;
+                background-size: cover;
+            }
+
+            .fi-simple-layout {
+                padding: 24px 16px !important;
+            }
+
+            .fi-simple-main {
+                padding: 34px 24px 30px !important;
+                border-radius: 22px !important;
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(242, 240, 233, 0.84)) !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fi-input-wrp,
+            .fi-btn {
+                transition: none !important;
+            }
         }
     </style>
 
-    <x-slot name="heading">
-        <div class="space-y-4 text-center">
-            <!-- Elegant Brand Logo Card -->
-            <div class="relative inline-flex items-center justify-center p-[1px] rounded-2xl bg-gradient-to-tr from-teal-500 via-slate-100 to-amber-500/40 shadow-sm">
-                <div class="h-12 w-12 rounded-[15px] bg-white flex items-center justify-center font-black text-teal-800 text-base tracking-wider border border-slate-50">
-                    PC
-                </div>
-            </div>
-            <div class="space-y-1">
-                <h1 class="text-xs font-bold tracking-[0.25em] text-teal-800 uppercase font-sans">
-                    Panama Corner
-                </h1>
-            </div>
-        </div>
-    </x-slot>
-
     <div class="space-y-6">
-        <div class="space-y-1.5 text-center">
-            <h2 class="text-xl font-bold text-slate-900 tracking-tight font-title">
-                Masuk ke Sistem
-            </h2>
-            <p class="text-xs text-slate-400">
-                Gunakan akun administrator Anda untuk melanjutkan.
-            </p>
+        <div class="text-center">
+            <div class="mb-6 inline-flex items-center justify-center gap-3">
+                <span class="admin-brand-mark flex h-12 w-12 items-center justify-center rounded-full bg-[#2f7d73] text-base font-medium text-white">PA</span>
+                <span class="text-lg font-extrabold tracking-tight text-[#121716]">Panama Corner</span>
+            </div>
+            <h1 class="text-2xl font-extrabold tracking-tight text-[#111615] sm:text-[28px]">Admin Portal Access</h1>
+            <p class="mt-2 text-xs leading-5 text-[#4f5856]">Akses khusus untuk administrator terdaftar.</p>
         </div>
 
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.before') }}
@@ -83,7 +219,7 @@
         <x-filament-panels::form wire:submit="authenticate">
             {{ $this->form }}
 
-            <div class="pt-2">
+            <div class="pt-3">
                 <x-filament-panels::form.actions
                     :actions="$this->getCachedFormActions()"
                     :full-width="$this->hasFullWidthFormActions()"
@@ -92,5 +228,10 @@
         </x-filament-panels::form>
 
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.after') }}
+
+        <div class="flex items-center justify-center gap-2 border-t border-black/8 pt-5 text-[10px] font-semibold uppercase tracking-[.13em] text-[#6d7472]">
+            <svg aria-hidden="true" class="h-3.5 w-3.5 text-[#2f7d73]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            Protected administrative area
+        </div>
     </div>
 </x-filament-panels::page.simple>

@@ -1,58 +1,195 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Panama Corner — Website Profil & Katalog UMKM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website company profile, katalog produk, jurnal edukasi, lokasi cabang, dan lead capture untuk UMKM Panama Corner. Aplikasi dilengkapi CMS berbasis Filament agar konten, pengguna, tampilan, SEO, serta integrasi pemasaran dapat dikelola tanpa mengubah kode.
 
-## About Laravel
+## Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Website publik
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Homepage responsif dengan katalog unggulan dan artikel terbaru
+- Profil usaha, visi–misi, legalitas, dan informasi brand
+- Katalog produk dengan pencarian, kategori, rentang harga, sorting, dan quick view
+- Detail produk, galeri, rekomendasi, dan pemesanan melalui WhatsApp
+- Jurnal/artikel dengan kategori, pencarian, metadata SEO, dan artikel terkait
+- Direktori lokasi, jam operasional, peta, telepon, dan petunjuk arah
+- Form kontak dengan validasi, honeypot, rate limiting, serta pengelolaan leads
+- Theme customizer, structured data, Open Graph, dan integrasi analytics
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Admin dashboard
 
-## Learning Laravel
+- Dashboard berbasis Filament
+- CRUD profil usaha, produk, kategori, artikel, lokasi, dan pesan masuk
+- Media library dengan image conversion
+- Pengelolaan pengguna, role, dan permission
+- Penggantian password dan autentikasi dua faktor
+- Activity log
+- Pengaturan tema, SEO, Google Analytics, Meta Pixel, TikTok Pixel, WhatsApp, dan Google Maps
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Teknologi
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.3+
+- Laravel 13
+- Filament 3
+- Laravel Fortify
+- Spatie Laravel Permission
+- Spatie Media Library
+- Tailwind CSS 4
+- Alpine.js
+- Vite 8
+- PHPUnit 12
+- SQLite untuk lingkungan pengembangan; database produksi dapat dikonfigurasi melalui `.env`
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Persyaratan Sistem
 
-## Agentic Development
+- PHP 8.3 atau lebih baru
+- Composer
+- Node.js dan npm
+- Ekstensi PHP yang dibutuhkan Laravel
+- Database SQLite, MySQL, atau PostgreSQL
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Instalasi Lokal
 
 ```bash
-composer require laravel/boost --dev
+git clone https://github.com/imammuamark/website_umkm.git
+cd website_umkm
 
-php artisan boost:install
+composer install
+npm install
+
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Untuk SQLite:
 
-## Contributing
+```bash
+touch database/database.sqlite
+php artisan migrate --seed
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Bangun aset dan jalankan aplikasi:
 
-## Code of Conduct
+```bash
+npm run build
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Aplikasi dapat diakses melalui `http://127.0.0.1:8000`, sedangkan dashboard tersedia di `/admin`.
 
-## Security Vulnerabilities
+Untuk menjalankan server aplikasi, queue, log viewer, dan Vite secara bersamaan:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+composer run dev
+```
 
-## License
+## Konfigurasi Penting
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Pastikan nilai berikut dikonfigurasi sesuai lingkungan:
+
+```dotenv
+APP_NAME="Panama Corner"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://example.com
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=panama_corner
+DB_USERNAME=database_user
+DB_PASSWORD=strong_database_password
+
+SESSION_SECURE_COOKIE=true
+SESSION_SAME_SITE=lax
+```
+
+Jangan menyimpan `.env`, token, password, backup, atau kredensial produksi ke repository.
+
+## Pengujian
+
+Jalankan seluruh test:
+
+```bash
+composer test
+```
+
+Pemeriksaan yang disarankan sebelum commit atau deployment:
+
+```bash
+php artisan test
+npm run build
+./vendor/bin/pint --test
+```
+
+Test suite mencakup route publik, security headers, form kontak, honeypot, akses admin, penanganan data profil parsial, dan validasi embed Google Maps.
+
+## Keamanan
+
+Implementasi keamanan yang tersedia meliputi:
+
+- CSRF protection pada form
+- Password hashing bawaan Laravel
+- Login rate limiting
+- Two-factor authentication
+- Role-based access control
+- Security headers dan Content Security Policy
+- Cookie dan session configuration melalui environment
+- Validasi input dan ORM parameter binding
+- Honeypot serta throttling form kontak
+- Whitelist URL Google Maps tanpa merender HTML admin secara mentah
+- Activity log untuk aktivitas administratif
+
+Untuk produksi, HTTPS wajib diaktifkan dan `APP_DEBUG` harus bernilai `false`. Lakukan audit dependency, backup terenkripsi, monitoring, dan security review secara berkala.
+
+## Deployment Produksi
+
+Checklist minimum:
+
+1. Konfigurasikan `.env` produksi dan database.
+2. Pasang HTTPS/TLS.
+3. Jalankan migration dengan mode force.
+4. Bangun aset frontend.
+5. Cache konfigurasi, route, dan view.
+6. Jalankan queue worker dengan process supervisor.
+7. Atur scheduler Laravel melalui cron.
+8. Pastikan direktori `storage` dan `bootstrap/cache` dapat ditulis oleh service aplikasi.
+
+```bash
+composer install --no-dev --optimize-autoloader
+npm ci
+npm run build
+
+php artisan migrate --force
+php artisan optimize
+php artisan storage:link
+```
+
+## Struktur Direktori
+
+```text
+app/
+├── Filament/          # Resources, pages, dan widgets admin
+├── Http/              # Controller dan middleware
+├── Models/            # Model Eloquent
+└── Policies/          # Otorisasi resource
+
+database/
+├── migrations/        # Struktur database
+└── seeders/           # Data awal pengembangan
+
+resources/
+├── css/               # Tailwind dan design system
+├── js/                # Alpine.js entry point
+└── views/             # Blade templates publik dan admin
+
+tests/
+└── Feature/           # Pengujian route dan keamanan
+```
+
+## Dokumentasi Produk
+
+Kebutuhan produk dan roadmap tersedia di [`prd_website_umkm.md`](prd_website_umkm.md).
+
+## Lisensi
+
+Proyek menggunakan komponen open-source dengan lisensinya masing-masing. Tentukan lisensi distribusi aplikasi ini sebelum penggunaan atau distribusi publik.

@@ -232,10 +232,13 @@
                     <h4 class="text-white font-semibold text-sm tracking-wider uppercase mb-4">Kepercayaan</h4>
                     <ul class="space-y-2 text-sm">
                         @php
-                            $docs = \App\Models\BusinessProfile::first()?->legal_docs ?? [];
+                            $docs = collect(\App\Models\BusinessProfile::first()?->legal_docs ?? [])
+                                ->filter(fn ($document) => is_array($document) && filled(data_get($document, 'name')))
+                                ->values()
+                                ->all();
                         @endphp
                         @foreach(array_slice($docs, 0, 3) as $doc)
-                            <li><span class="text-xs text-gray-500 font-mono">{{ $doc['name'] }}:</span> <span class="text-gray-400">{{ $doc['number'] }}</span></li>
+                            <li><span class="text-xs text-gray-500 font-mono">{{ data_get($doc, 'name', 'Dokumen') }}:</span> <span class="text-gray-400">{{ data_get($doc, 'number', 'Nomor belum tersedia') }}</span></li>
                         @endforeach
                     </ul>
                 </div>

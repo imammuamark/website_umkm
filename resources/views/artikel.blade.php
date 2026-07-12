@@ -3,23 +3,16 @@
 @section('title', 'Edukasi Kopi & Cerita Roastery | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
-<!-- Header -->
-<section class="bg-gray-900 py-16 text-white relative">
-    <div class="absolute inset-0 bg-gradient-to-br from-primary/30 to-transparent"></div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-3">
-        <h1 class="text-3xl font-bold font-title tracking-tight sm:text-4xl">Artikel & Informasi</h1>
-        <p class="text-gray-300 max-w-xl mx-auto">Tips menyeduh kopi, wawasan biji kopi lokal, dan cerita di balik dapur pemanggangan kami.</p>
-    </div>
-</section>
+@include('partials.page_hero', ['eyebrow' => 'Jurnal Panama Corner', 'title' => 'Wawasan & Cerita Kopi', 'subtitle' => 'Tips menyeduh, pengetahuan biji kopi lokal, dan cerita dari balik dapur pemanggangan kami.'])
 
 <!-- Main Container -->
-<section class="py-16 bg-white flex-grow">
+<section class="public-page-content py-20 bg-[#f7f8f7] flex-grow">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
             <!-- Filters Sidebar -->
             <div class="col-span-1 space-y-6">
-                <form action="{{ route('artikel') }}" method="GET" class="space-y-6 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                <form action="{{ route('artikel') }}" method="GET" class="premium-surface space-y-6 bg-white p-6 rounded-2xl border border-gray-100 lg:sticky lg:top-28">
                     <!-- Search input -->
                     <div class="space-y-2">
                         <label for="q" class="text-xs font-bold uppercase tracking-wider text-gray-400">Pencarian</label>
@@ -52,7 +45,7 @@
                 @if($articles->count() > 0)
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         @foreach($articles as $article)
-                            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition duration-300 flex flex-col h-full group">
+                            <article class="premium-product-card bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition duration-300 flex flex-col h-full group">
                                 <div class="aspect-video bg-gray-50 relative overflow-hidden flex items-center justify-center">
                                     @php
                                         $thumb = $article->getFirstMediaUrl('featured_image', 'thumb');
@@ -78,7 +71,7 @@
                                         <span>{{ $article->reading_time }} Menit Baca</span>
                                     </div>
                                 </div>
-                            </div>
+                            </article>
                         @endforeach
                     </div>
 

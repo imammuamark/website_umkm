@@ -1,8 +1,38 @@
+<!-- Inject Tailwind CSS CDN to compile custom classes on guest page -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        50: '#f0fdfa',
+                        100: '#ccfbf1',
+                        200: '#99f6e4',
+                        300: '#5eead4',
+                        400: '#2dd4bf',
+                        500: '#14b8a6',
+                        600: '#0d9488',
+                        700: '#0f766e',
+                        800: '#115e59',
+                        900: '#134e4a',
+                        950: '#042f2e',
+                    }
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                    title: ['Plus Jakarta Sans', 'sans-serif'],
+                }
+            }
+        }
+    }
+</script>
+
 <div class="grid min-h-screen grid-cols-1 lg:grid-cols-12 bg-white dark:bg-gray-950 font-sans">
     <!-- Left Panel: Premium Brand Section (Hidden on mobile) -->
     <div class="relative hidden lg:flex lg:col-span-5 flex-col justify-between bg-teal-950 text-white p-12 overflow-hidden">
         <!-- Abstract gradient overlays -->
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(15,118,110,0.45),transparent)]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(20,184,166,0.3),transparent)]"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-teal-900/40 via-teal-950/90 to-teal-950"></div>
         
         <!-- Top branding logo & name -->
@@ -16,7 +46,7 @@
         </div>
 
         <!-- Middle marketing copy & dynamic feel -->
-        <div class="relative z-10 space-y-6">
+        <div class="relative z-10 space-y-6 my-auto">
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-800/40 border border-teal-700/30 text-xs text-teal-300">
                 <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
                 Sistem Operasional Terintegrasi

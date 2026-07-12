@@ -48,10 +48,17 @@ class ArticleResource extends Resource
                                             ->placeholder('Tulis judul yang jelas dan spesifik')
                                             ->required()
                                             ->maxLength(160)
-                                            ->live(onBlur: true)
-                                            ->afterStateUpdated(function (Set $set, ?string $state, ?Article $record): void {
-                                                if (! $record || blank($record->slug)) {
+                                            ->live(debounce: 500)
+                                            ->afterStateUpdated(function (Set $set, ?string $state, ?string $old, Get $get): void {
+                                                // Sync slug in real-time if blank or matches old title slug
+                                                $oldSlug = Str::slug((string) $old);
+                                                if (blank($get('slug')) || $get('slug') === $oldSlug) {
                                                     $set('slug', Str::slug((string) $state));
+                                                }
+                                                // Sync meta title in real-time if blank or matches old title
+                                                $oldMetaTitle = Str::limit(strip_tags((string) $old), 70);
+                                                if (blank($get('meta_title')) || $get('meta_title') === $oldMetaTitle) {
+                                                    $set('meta_title', Str::limit(strip_tags((string) $state), 70));
                                                 }
                                             })
                                             ->columnSpan(2),
@@ -122,13 +129,20 @@ class ArticleResource extends Resource
                                     ->columnSpanFull(),
 
                                 Forms\Components\Textarea::make('excerpt')
-                                    ->label('Ringkasan Artikel')
-                                    ->placeholder('Ringkasan singkat untuk kartu artikel dan hasil pencarian')
-                                    ->helperText('Jika kosong, sistem membuat ringkasan dari isi artikel.')
-                                    ->rows(4)
-                                    ->maxLength(300)
-                                    ->live(onBlur: true)
-                                    ->columnSpanFull(),
+                                     ->label('Ringkasan Artikel')
+                                     ->placeholder('Ringkasan singkat untuk kartu artikel dan hasil pencarian')
+                                     ->helperText('Jika kosong, sistem membuat ringkasan dari isi artikel.')
+                                     ->rows(4)
+                                     ->maxLength(300)
+                                     ->live(debounce: 500)
+                                     ->afterStateUpdated(function (Set $set, ?string $state, ?string $old, Get $get): void {
+                                         // Sync meta description in real-time if blank or matches old excerpt
+                                         $oldMetaDescription = Str::limit(trim(preg_replace('/\s+/', ' ', (string) $old)), 160);
+                                         if (blank($get('meta_description')) || $get('meta_description') === $oldMetaDescription) {
+                                             $set('meta_description', Str::limit(trim(preg_replace('/\s+/', ' ', (string) $state)), 160));
+                                         }
+                                     })
+                                     ->columnSpanFull(),
                             ]),
 
                         Forms\Components\Section::make('SEO & Social Preview')

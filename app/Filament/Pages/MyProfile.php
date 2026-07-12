@@ -58,7 +58,7 @@ class MyProfile extends Page implements HasForms
                         ->label('Email')
                         ->email()
                         ->required()
-                        ->unique(User::class, 'email', ignoreRecord: Auth::user()),
+                        ->unique(User::class, 'email', ignorable: Auth::user()),
                 ])
                 ->statePath('profileData'),
 

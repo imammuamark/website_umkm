@@ -75,4 +75,20 @@ class SecurityAndRouteTest extends TestCase
 
         $response->assertStatus(422);
     }
+
+    /**
+     * Test that admin authentication and dashboard page rendering works cleanly.
+     */
+    public function test_admin_profile_page_loads_for_authenticated_admin(): void
+    {
+        $admin = User::where('email', 'admin@aromaticacoffee.com')->first();
+        $this->assertNotNull($admin);
+
+        // Act as admin and visit Filament dashboard custom page MyProfile
+        $response = $this->actingAs($admin)
+                         ->get('/admin/my-profile');
+
+        $response->assertStatus(200);
+        $response->assertSee('Profil Saya');
+    }
 }

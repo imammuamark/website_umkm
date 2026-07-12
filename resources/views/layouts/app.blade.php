@@ -255,7 +255,7 @@
 
             <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
                 <p>&copy; {{ date('Y') }} {{ \App\Models\BusinessProfile::first()?->business_name ?? 'Panama Corner' }}. Hak Cipta Dilindungi Undang-Undang.</p>
-                <p>Built with Laravel & Filament</p>
+                <p class="mt-2 md:mt-0 text-[11px] text-gray-500">NIB: 1209831920831 | Halal ID32110000293810822</p>
             </div>
         </div>
     </footer>

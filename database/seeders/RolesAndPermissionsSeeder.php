@@ -26,6 +26,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage content',
             'manage products',
             'manage articles',
+            'view articles',
+            'create articles',
+            'update own articles',
+            'update all articles',
+            'review articles',
+            'publish articles',
+            'archive articles',
+            'delete articles',
             'view logs',
             'view leads',
             'manage leads',
@@ -45,6 +53,10 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage content',
             'manage products',
             'manage articles',
+            'view articles',
+            'create articles',
+            'update all articles',
+            'review articles',
             'view leads',
         ]);
 
@@ -53,6 +65,9 @@ class RolesAndPermissionsSeeder extends Seeder
         $staffRole->givePermissionTo([
             'manage products',
             'manage articles',
+            'view articles',
+            'create articles',
+            'update own articles',
             'view leads',
             'manage leads',
         ]);

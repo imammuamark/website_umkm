@@ -167,6 +167,40 @@
             color: var(--login-teal) !important;
         }
 
+        .academic-attribution {
+            color: #67706e;
+            text-align: center;
+        }
+
+        .academic-attribution__meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            color: #3f4947;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .academic-attribution__dot {
+            width: 3px;
+            height: 3px;
+            flex: 0 0 3px;
+            border-radius: 999px;
+            background: var(--login-gold-dark);
+            box-shadow: 0 0 0 3px rgba(185, 135, 34, 0.1);
+        }
+
+        .academic-attribution__university {
+            margin-top: 5px;
+            color: #737b79;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+
         @media (max-width: 767px) {
             body {
                 background: #101715 !important;
@@ -229,9 +263,12 @@
 
         {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.after') }}
 
-        <div class="flex items-center justify-center gap-2 border-t border-black/8 pt-5 text-[10px] font-semibold uppercase tracking-[.13em] text-[#6d7472]">
-            <svg aria-hidden="true" class="h-3.5 w-3.5 text-[#2f7d73]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-            Protected administrative area
-        </div>
+        <footer class="academic-attribution border-t border-black/8 pt-5" aria-label="Atribusi proyek">
+            <div class="academic-attribution__meta">
+                <span>Proyek Kewirausahaan Kelompok 1</span>
+                <span class="academic-attribution__dot" aria-hidden="true"></span>
+                <span>Universitas UP45 Yogyakarta</span>
+            </div>
+        </footer>
     </div>
 </x-filament-panels::page.simple>

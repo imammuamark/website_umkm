@@ -2,44 +2,48 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\User;
 use App\Models\ActivityLog;
-use Filament\Pages\Page;
-use Filament\Forms\Form;
+use App\Models\User;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Actions\Action;
-use Illuminate\Support\Facades\Hash;
+use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
-use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
+use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
+use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 
 class MyProfile extends Page implements HasForms
 {
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
+
     protected static ?string $navigationGroup = 'Pengaturan Keamanan';
+
     protected static ?string $title = 'Profil Saya & 2FA';
+
     protected static ?string $navigationLabel = 'Profil Saya';
 
     protected static string $view = 'filament.pages.my-profile';
 
     public ?array $profileData = [];
+
     public ?array $passwordData = [];
-    
+
     public string $twoFactorCode = '';
+
     public bool $showingQrCode = false;
+
     public bool $showingRecoveryCodes = false;
 
     public function mount(): void
     {
         $user = Auth::user();
-        
+
         $this->profileForm->fill([
             'name' => $user->name,
             'email' => $user->email,
@@ -72,7 +76,7 @@ class MyProfile extends Page implements HasForms
                         ->label('Kata Sandi Baru')
                         ->password()
                         ->required()
-                        ->minLength(8),
+                        ->rule(Password::default()),
                     TextInput::make('new_password_confirmation')
                         ->label('Konfirmasi Kata Sandi Baru')
                         ->password()
@@ -87,7 +91,7 @@ class MyProfile extends Page implements HasForms
     {
         $state = $this->profileForm->getState();
         $user = Auth::user();
-        
+
         $user->update([
             'name' => $state['name'],
             'email' => $state['email'],
@@ -107,12 +111,13 @@ class MyProfile extends Page implements HasForms
         /** @var User $user */
         $user = Auth::user();
 
-        if (!Hash::check($state['current_password'], $user->password)) {
+        if (! Hash::check($state['current_password'], $user->password)) {
             Notification::make()
                 ->title('Gagal Mengubah Kata Sandi')
                 ->body('Kata sandi saat ini tidak cocok.')
                 ->danger()
                 ->send();
+
             return;
         }
 
@@ -136,11 +141,11 @@ class MyProfile extends Page implements HasForms
     {
         /** @var User $user */
         $user = Auth::user();
-        
+
         app(EnableTwoFactorAuthentication::class)($user);
-        
+
         $this->showingQrCode = true;
-        
+
         Notification::make()
             ->title('Langkah Verifikasi Dua Faktor')
             ->body('Pindai QR Code di bawah dengan aplikasi authenticator Anda, lalu masukkan kode untuk konfirmasi.')
@@ -152,18 +157,19 @@ class MyProfile extends Page implements HasForms
     {
         /** @var User $user */
         $user = Auth::user();
-        
+
         if (empty($this->twoFactorCode)) {
             Notification::make()
                 ->title('Kode Diperlukan')
                 ->danger()
                 ->send();
+
             return;
         }
 
         try {
             app(ConfirmTwoFactorAuthentication::class)($user, $this->twoFactorCode);
-            
+
             $this->showingQrCode = false;
             $this->showingRecoveryCodes = true;
             $this->twoFactorCode = '';

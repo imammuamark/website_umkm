@@ -12,6 +12,18 @@ class EditArticle extends EditRecord
 {
     protected static string $resource = ArticleResource::class;
 
+    protected ?string $maxContentWidth = 'full';
+
+    public function getTitle(): string
+    {
+        return 'Edit Artikel';
+    }
+
+    public function getSubheading(): ?string
+    {
+        return 'Perbarui konten dan media dengan kontrol versi serta workflow publikasi yang aman.';
+    }
+
     protected function getHeaderActions(): array
     {
         return [

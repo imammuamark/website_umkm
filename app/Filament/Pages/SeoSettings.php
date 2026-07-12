@@ -2,25 +2,29 @@
 
 namespace App\Filament\Pages;
 
-use App\Models\SiteSetting;
 use App\Models\ActivityLog;
+use App\Models\SiteSetting;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Form;
-use Filament\Pages\Page;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Actions\Action;
+use Filament\Pages\Page;
 
 class SeoSettings extends Page implements HasForms
 {
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
+
     protected static ?string $navigationGroup = 'Profil Usaha';
+
     protected static ?string $title = 'SEO & Integrasi Pemasaran';
+
     protected static ?string $navigationLabel = 'SEO & Integrasi';
 
     protected static string $view = 'filament.pages.seo-settings';
@@ -37,6 +41,8 @@ class SeoSettings extends Page implements HasForms
             'tiktok_pixel_id' => SiteSetting::get('tiktok_pixel_id'),
             'whatsapp_number' => SiteSetting::get('whatsapp_number'),
             'whatsapp_text_template' => SiteSetting::get('whatsapp_text_template'),
+            'enable_whatsapp_order' => (bool) SiteSetting::get('enable_whatsapp_order', true),
+            'show_whatsapp_fab' => (bool) SiteSetting::get('show_whatsapp_fab', true),
             'google_maps_embed' => SiteSetting::get('google_maps_embed'),
         ]);
     }
@@ -69,6 +75,14 @@ class SeoSettings extends Page implements HasForms
                             ->helperText('Gunakan tag {product_name} untuk produk yang dipesan.')
                             ->required()
                             ->rows(2),
+                        Toggle::make('enable_whatsapp_order')
+                            ->label('Aktifkan Pemesanan via WhatsApp')
+                            ->helperText('Jika dinonaktifkan, tombol pemesanan WhatsApp di halaman produk dan modal detail akan disembunyikan.')
+                            ->default(true),
+                        Toggle::make('show_whatsapp_fab')
+                            ->label('Tampilkan Floating Action Button (FAB) WhatsApp')
+                            ->helperText('Jika dinonaktifkan, tombol melayang WhatsApp di pojok kanan bawah halaman publik akan disembunyikan.')
+                            ->default(true),
                         Textarea::make('google_maps_embed')
                             ->label('Kode Embed Peta Google Maps (Iframe HTML)')
                             ->helperText('Salin kode HTML dari menu Bagikan > Sematkan Peta di Google Maps.')

@@ -16,7 +16,13 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             BusinessProfileSeeder::class,
             SiteSettingSeeder::class,
+            LocationSeeder::class,
             CatalogSeeder::class,
+            MenuProductSeeder::class,
+            DigitalMenuSeeder::class,
+            PanamaStoryArticleSeeder::class,
+            PageSeeder::class,
+            MenuItemSeeder::class,
         ]);
     }
 }

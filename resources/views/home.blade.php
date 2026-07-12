@@ -1,193 +1,191 @@
 @extends('layouts.app')
 
 @section('title', \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner') . ' | Beranda')
-
-@section('meta_description', 'Nikmati kopi Nusantara pilihan yang dikurasi dan dipanggang segar oleh Panama Corner.')
+@section('meta_description', \App\Models\SiteSetting::get('meta_description_default', 'Kafe di Condongcatur dengan pilihan makanan dan minuman.'))
 
 @section('content')
 @php
-    $heroUploaded = \App\Models\SiteSetting::get('hero_image_upload');
-    $heroImage = $heroUploaded
-        ? \Illuminate\Support\Facades\Storage::url($heroUploaded)
-        : \App\Models\SiteSetting::get('hero_image_url', asset('images/panama-roastery-hero.png'));
-    $yearsInBusiness = max(1, now()->year - (int) ($stats['founded_year'] ?? now()->year));
+    $heroImage = \App\Models\SiteSetting::homeHeroUrl() ?: asset('images/panama-roastery-hero.png');
+    $businessName = $profile?->business_name ?? 'Panama Corner';
+    $firstProduct = $featuredProducts->first();
+    $sideProducts = $featuredProducts->skip(1)->take(2);
+    $leadArticle = $latestArticles->first();
+    $sideArticles = $latestArticles->skip(1)->take(2);
+    $locationAddress = $primaryLocation?->address ?: 'Jl. Mancasan Indah III No.1, Condongcatur, Sleman';
 @endphp
 
-<section class="home-hero relative isolate min-h-[620px] overflow-hidden bg-[#070a09] text-white lg:min-h-[680px]">
-    <img
-        src="{{ $heroImage }}"
-        alt="Mesin roasting dan biji kopi Panama Corner"
-        class="absolute inset-0 h-full w-full object-cover object-[66%_center]"
-        width="1792"
-        height="1024"
-        fetchpriority="high"
-        decoding="async"
-    >
-    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(4,8,7,.98)_0%,rgba(4,8,7,.87)_35%,rgba(4,8,7,.33)_64%,rgba(4,8,7,.08)_100%)]"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10"></div>
+<section class="relative isolate min-h-[680px] overflow-hidden bg-[#07120f] text-white lg:min-h-[760px]">
+    <img src="{{ $heroImage }}" alt="Suasana {{ $businessName }}" class="absolute inset-0 h-full w-full object-cover object-center" width="1920" height="1080" fetchpriority="high" decoding="async">
+    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,15,12,.94)_0%,rgba(5,15,12,.75)_38%,rgba(5,15,12,.24)_72%,rgba(5,15,12,.12)_100%)]"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(3,10,8,.44)_0%,transparent_25%,transparent_62%,rgba(3,10,8,.78)_100%)]"></div>
+    <div class="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/30 to-transparent"></div>
 
-    <div class="relative mx-auto flex min-h-[620px] max-w-7xl items-center px-4 pb-32 pt-20 sm:px-6 lg:min-h-[680px] lg:px-8 lg:pb-40">
-        <div class="max-w-2xl">
-            <p class="mb-5 inline-flex rounded-full border border-secondary/45 bg-black/25 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-secondary backdrop-blur-sm">
-                Artisan Coffee Roaster Premium
-            </p>
-            <h1 class="max-w-2xl text-4xl font-extrabold leading-[1.05] tracking-[-0.035em] sm:text-5xl lg:text-[4rem]">
-                Nikmati Cita Rasa Kopi Nusantara yang <span class="text-secondary">Sesungguhnya.</span>
+    <div class="relative mx-auto flex min-h-[680px] max-w-[1440px] items-end px-5 pb-16 pt-32 sm:px-8 sm:pb-20 lg:min-h-[760px] lg:px-12 lg:pb-24 xl:px-16">
+        <div class="home-reveal max-w-[720px]">
+            <div class="mb-7 flex items-center gap-4">
+                <span class="h-px w-10 bg-secondary"></span>
+                <p class="text-[11px] font-semibold uppercase tracking-[.24em] text-white/78">Cafe · Food · Coffee · Yogyakarta</p>
+            </div>
+            <h1 class="max-w-[700px] text-[2.75rem] font-semibold leading-[1.02] tracking-[-.045em] sm:text-[3.6rem] lg:text-[4.5rem]">
+                {{ \App\Models\SiteSetting::get('hero_title', 'Makan enak, ngopi nyaman.') }}
             </h1>
-            <p class="mt-6 max-w-xl text-sm leading-7 text-white/80 sm:text-base">
-                Kami mengurasi biji kopi pilihan dari petani lokal di seluruh penjuru Indonesia dan memanggangnya segar secara presisi untuk menghadirkan kualitas terbaik di setiap cangkir kopi Anda.
+            <p class="mt-7 max-w-[560px] text-[15px] leading-7 text-white/76 sm:text-base">
+                {{ \App\Models\SiteSetting::get('hero_subtitle', 'Pilihan makanan, camilan, kopi, dan minuman nonkopi untuk makan santai, bekerja, atau berkumpul bersama.') }}
             </p>
-            <div class="mt-8 flex flex-wrap gap-3">
-                <a href="{{ route('produk') }}" class="inline-flex min-h-12 items-center justify-center rounded-lg bg-secondary px-6 text-sm font-bold text-[#17130b] shadow-[0_10px_30px_rgba(245,158,11,.28)] transition hover:-translate-y-0.5 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-secondary">
-                    Jelajahi Katalog
+            <div class="mt-9 flex flex-wrap items-center gap-4">
+                <a href="{{ route('produk') }}" class="inline-flex min-h-12 items-center gap-3 rounded-full bg-secondary px-6 text-[13px] font-bold text-[#172019] shadow-[0_16px_36px_rgba(0,0,0,.22)] transition duration-300 hover:-translate-y-0.5 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-secondary">
+                    Jelajahi Sajian <span aria-hidden="true">↗</span>
                 </a>
-                <a href="{{ route('kontak') }}" class="inline-flex min-h-12 items-center justify-center rounded-lg border border-secondary/75 bg-black/20 px-6 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-secondary hover:text-[#17130b] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-secondary">
-                    Hubungi Kami
+                <a href="{{ route('lokasi') }}" class="inline-flex min-h-12 items-center gap-3 rounded-full border border-white/35 bg-white/8 px-6 text-[13px] font-semibold text-white backdrop-blur-md transition duration-300 hover:border-white/65 hover:bg-white/14 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+                    Kunjungi Kami <span aria-hidden="true">→</span>
                 </a>
             </div>
         </div>
     </div>
+
+    <div class="absolute bottom-7 right-7 hidden items-center gap-3 text-[10px] uppercase tracking-[.2em] text-white/50 lg:flex">
+        <span>Scroll untuk menjelajah</span><span class="block h-10 w-px bg-white/25"></span>
+    </div>
 </section>
 
-<section aria-label="Statistik Panama Corner" class="relative z-10 -mt-24 px-4 sm:px-6 lg:px-8">
-    <div class="mx-auto grid max-w-7xl gap-4 md:grid-cols-3">
+<section aria-label="Informasi singkat" class="border-b border-[#d8d4ca] bg-[#f5f2eb]">
+    <div class="mx-auto grid max-w-[1440px] grid-cols-1 sm:grid-cols-3 sm:px-8 lg:px-12 xl:px-16">
         @foreach([
-            ['value' => $yearsInBusiness . ' Tahun', 'label' => 'Pengalaman Roasting', 'icon' => 'coffee'],
-            ['value' => ($stats['products_count'] ?? 0) . '+', 'label' => 'Varian Biji Kopi & Kopi Botol', 'icon' => 'bean'],
-            ['value' => ($stats['locations_count'] ?? 0) . ' Cabang', 'label' => 'Experience Bar & Roastery', 'icon' => 'users'],
+            ['value' => '7 Hari', 'label' => 'Buka setiap pekan'],
+            ['value' => ($stats['products_count'] ?? 0) . '+', 'label' => 'Pilihan sajian'],
+            ['value' => max(1, $stats['locations_count'] ?? 0), 'label' => 'Lokasi untuk dikunjungi'],
         ] as $stat)
-            <article class="home-stat-card min-h-[164px] rounded-xl px-6 py-6 text-center sm:py-7">
-                <div class="home-stat-icon mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-lg bg-secondary text-[#211b10]">
-                    @if($stat['icon'] === 'coffee')
-                        <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9Z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16M8 5c0 1 1 1 1 2M12 4c0 1 1 1 1 2"/></svg>
-                    @elseif($stat['icon'] === 'bean')
-                        <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15.5 4.5c4 1.5 5 6.3 2.3 10.2S10.5 20.8 7 18.3 4.2 11 7.1 7c2.7-2.7 5.8-3.5 8.4-2.5Z"/><path d="M16 5c-1.1 4-4.2 8.5-8.6 12.8"/></svg>
-                    @else
-                        <svg aria-hidden="true" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3.5 19v-1.5A4.5 4.5 0 0 1 8 13h2a4.5 4.5 0 0 1 4.5 4.5V19M14 14.2a4 4 0 0 1 6.5 3.1V19"/></svg>
-                    @endif
-                </div>
-                <p class="text-2xl font-extrabold tracking-tight text-gray-950 sm:text-3xl">{{ $stat['value'] }}</p>
-                <p class="mt-1 text-xs font-medium text-gray-600">{{ $stat['label'] }}</p>
-            </article>
+            <div class="home-reveal flex min-h-24 items-center gap-5 border-b border-[#d8d4ca] px-5 py-5 last:border-b-0 sm:border-b-0 sm:border-r sm:px-7 sm:last:border-r-0 lg:min-h-28 lg:px-10">
+                <strong class="text-2xl font-semibold tracking-[-.04em] text-[#10251f] lg:text-3xl">{{ $stat['value'] }}</strong>
+                <span class="max-w-28 text-[11px] font-medium uppercase leading-5 tracking-[.12em] text-[#68736e]">{{ $stat['label'] }}</span>
+            </div>
         @endforeach
     </div>
 </section>
 
-<section class="bg-white px-4 pb-20 pt-20 sm:px-6 lg:px-8 lg:pb-24 lg:pt-24">
-    <div class="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:gap-20">
-        <div>
-            <p class="mb-3 text-xs font-bold uppercase tracking-[.18em] text-primary">Tentang Panama Corner</p>
-            <h2 class="text-3xl font-extrabold leading-tight tracking-tight text-gray-950 sm:text-4xl">Dedikasi Kami untuk Kopi Indonesia yang Lebih Baik.</h2>
-            <p class="mt-5 text-sm leading-7 text-gray-600">{{ $profile?->description ?? 'Panama Corner menghadirkan kopi spesialti premium dari perkebunan terbaik Indonesia, dipanggang segar dengan dedikasi pada kualitas dan konsistensi.' }}</p>
+<section class="bg-[#f5f2eb] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16">
+    <div class="mx-auto grid max-w-[1320px] items-center gap-12 lg:grid-cols-12 lg:gap-20">
+        <div class="home-reveal relative lg:col-span-7">
+            <div class="aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-[#d9d5cb] shadow-[0_28px_70px_rgba(29,41,35,.16)]">
+                @if($storyImage)
+                    <img src="{{ $storyImage }}" alt="Suasana bersantai di {{ $businessName }}" class="h-full w-full object-cover" loading="lazy" decoding="async">
+                @else
+                    <img src="{{ asset('images/about-heritage.jpg') }}" alt="Suasana dan sajian {{ $businessName }}" class="h-full w-full object-cover" loading="lazy" decoding="async">
+                @endif
+            </div>
+            <div class="absolute -bottom-6 right-5 rounded-2xl border border-white/65 bg-white/78 px-5 py-4 shadow-xl backdrop-blur-xl sm:right-8">
+                <p class="text-[10px] font-bold uppercase tracking-[.18em] text-primary">Condongcatur</p>
+                <p class="mt-1 text-sm font-semibold text-[#17231f]">Sleman, Yogyakarta</p>
+            </div>
         </div>
-        <div class="flex flex-col justify-center gap-6">
-            <div class="flex gap-4">
-                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-[#20190c]">✓</span>
-                <div><h3 class="text-sm font-bold text-gray-950">Biji Kopi 100% Pilihan Single Origin</h3><p class="mt-1 text-xs leading-5 text-gray-500">Dikurasi langsung dari perkebunan dataran tinggi dengan karakter rasa terbaik.</p></div>
+        <div class="home-reveal lg:col-span-5">
+            <p class="text-[11px] font-bold uppercase tracking-[.22em] text-primary">Tentang {{ $businessName }}</p>
+            <h2 class="mt-5 text-3xl font-semibold leading-[1.12] tracking-[-.035em] text-[#10251f] sm:text-4xl lg:text-[2.75rem]">Menu lengkap, tempat nyaman.</h2>
+            <p class="mt-7 text-[15px] leading-8 text-[#5c6762]">{{ $profile?->description ?? 'Panama Corner adalah kafe di Condongcatur dengan pilihan makanan, camilan, kopi, dan minuman nonkopi untuk dinikmati sendiri atau bersama teman.' }}</p>
+            <div class="mt-8 grid grid-cols-2 gap-5 border-y border-[#d4d0c5] py-6">
+                <div><p class="text-sm font-semibold text-[#10251f]">Sajian beragam</p><p class="mt-1 text-xs leading-5 text-[#707a75]">Dari makanan hingga minuman untuk berbagai waktu.</p></div>
+                <div><p class="text-sm font-semibold text-[#10251f]">Tempat yang fleksibel</p><p class="mt-1 text-xs leading-5 text-[#707a75]">Cocok untuk makan, bekerja ringan, atau berkumpul.</p></div>
             </div>
-            <div class="flex gap-4">
-                <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-[#20190c]">✓</span>
-                <div><h3 class="text-sm font-bold text-gray-950">Proses Roasting Artisan</h3><p class="mt-1 text-xs leading-5 text-gray-500">Setiap batch dipanggang segar dengan profil yang dikunci secara konsisten.</p></div>
-            </div>
-            <a href="{{ route('profil') }}" class="inline-flex w-fit items-center gap-2 text-sm font-bold text-secondary transition hover:gap-3 hover:text-amber-600">Baca Selengkapnya <span aria-hidden="true">→</span></a>
+            <a href="{{ route('profil') }}" class="mt-8 inline-flex items-center gap-3 text-[13px] font-bold text-[#10251f] transition hover:gap-4 hover:text-primary">Tentang Panama Corner <span aria-hidden="true">→</span></a>
         </div>
     </div>
 </section>
 
-<section class="border-y border-gray-200 bg-[#f7f8f7] px-4 py-20 sm:px-6 lg:px-8 lg:py-24">
-    <div class="mx-auto max-w-7xl">
-        <div class="mb-9 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div><p class="mb-2 text-xs font-bold uppercase tracking-[.18em] text-primary">Katalog Pilihan</p><h2 class="text-3xl font-extrabold tracking-tight text-gray-950 sm:text-4xl">Produk Pilihan Terpopuler</h2><p class="mt-2 text-sm text-gray-600">Varian biji kopi single origin andalan dan produk siap minum terlaris kami.</p></div>
-            <a href="{{ route('produk') }}" class="inline-flex min-h-11 w-fit items-center justify-center rounded-lg bg-secondary px-5 text-xs font-bold text-[#211b10] shadow-md transition hover:-translate-y-0.5 hover:brightness-105">Lihat Semua Produk</a>
+<section class="bg-white px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16" aria-labelledby="featured-menu-title">
+    <div class="mx-auto max-w-[1320px]">
+        <div class="home-reveal mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between lg:mb-14">
+            <div><p class="text-[11px] font-bold uppercase tracking-[.22em] text-primary">Pilihan dari dapur</p><h2 id="featured-menu-title" class="mt-4 text-3xl font-semibold tracking-[-.04em] text-[#10251f] sm:text-4xl lg:text-[2.75rem]">Coba menu pilihan kami.</h2></div>
+            <a href="{{ route('produk') }}" class="inline-flex w-fit items-center gap-3 border-b border-[#10251f] pb-2 text-[12px] font-bold uppercase tracking-[.12em] text-[#10251f] transition hover:border-primary hover:text-primary">Lihat seluruh menu <span>↗</span></a>
         </div>
 
-        @if($featuredProducts->isNotEmpty())
-            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach($featuredProducts as $product)
-                    @php $thumb = $product->getFirstMediaUrl('gallery', 'large') ?: $product->getFirstMediaUrl('gallery', 'thumb'); @endphp
-                    <article class="group overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-                        <a href="{{ route('produk.detail', $product->slug) }}" class="relative block aspect-[4/3] overflow-hidden bg-[#ececea]">
-                            @if($product->is_bestseller)<span class="absolute left-3 top-3 z-10 rounded-md bg-secondary px-2 py-1 text-[9px] font-extrabold uppercase tracking-wide text-[#211b10]">Terlaris</span>@endif
-                            @if($thumb)
-                                <img src="{{ $thumb }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">
-                            @else
-                                <div class="flex h-full items-center justify-center text-6xl text-primary/15" aria-hidden="true">☕</div>
-                            @endif
-                        </a>
-                        <div class="p-5">
-                            <p class="text-[10px] font-bold uppercase tracking-[.13em] text-primary">{{ $product->category?->name ?? 'Produk Panama Corner' }}</p>
-                            <h3 class="mt-2 min-h-12 text-base font-extrabold leading-6 text-gray-950"><a class="transition hover:text-primary" href="{{ route('produk.detail', $product->slug) }}">{{ $product->name }}</a></h3>
-                            <p class="mt-2 line-clamp-2 text-xs leading-5 text-gray-500">{{ \Illuminate\Support\Str::limit(strip_tags($product->description), 115) }}</p>
-                            <div class="mt-5 flex items-center justify-between border-t border-gray-100 pt-4">
-                                <strong class="text-sm text-gray-950">{{ $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : 'Hubungi Kami' }}</strong>
-                                <a href="{{ route('produk.detail', $product->slug) }}" class="rounded-md bg-secondary px-3 py-2 text-[10px] font-bold text-[#211b10] transition hover:brightness-95">Detail Kopi</a>
+        @if($firstProduct)
+            <div class="grid gap-5 lg:grid-cols-12">
+                <article class="home-reveal group relative min-h-[470px] overflow-hidden rounded-[1.75rem] bg-[#10251f] lg:col-span-7 lg:min-h-[620px]">
+                    @if($firstProduct->resolvedImageUrl('large'))<img src="{{ $firstProduct->resolvedImageUrl('large') }}" alt="{{ $firstProduct->name }}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]" loading="lazy" decoding="async">@endif
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/12 to-transparent"></div>
+                    <div class="absolute inset-x-0 bottom-0 p-7 text-white sm:p-9">
+                        <p class="text-[10px] font-bold uppercase tracking-[.2em] text-secondary">{{ $firstProduct->category?->name ?? 'Pilihan menu' }}</p>
+                        <div class="mt-3 flex items-end justify-between gap-6"><h3 class="text-2xl font-semibold tracking-[-.03em] sm:text-3xl">{{ $firstProduct->name }}</h3><p class="shrink-0 text-sm font-bold">{{ $firstProduct->price ? 'Rp '.number_format($firstProduct->price, 0, ',', '.') : 'Tanya harga' }}</p></div>
+                        <a href="{{ route('produk.detail', $firstProduct->slug) }}" class="absolute inset-0"><span class="sr-only">Lihat {{ $firstProduct->name }}</span></a>
+                    </div>
+                </article>
+                <div class="grid gap-5 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
+                    @foreach($sideProducts as $product)
+                        <article class="home-reveal group relative min-h-[290px] overflow-hidden rounded-[1.75rem] bg-[#e8e4da]">
+                            @if($product->resolvedImageUrl('large'))<img src="{{ $product->resolvedImageUrl('large') }}" alt="{{ $product->name }}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" loading="lazy" decoding="async">@endif
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/5 to-transparent"></div>
+                            <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-5 p-6 text-white">
+                                <div><p class="text-[9px] font-bold uppercase tracking-[.18em] text-secondary">{{ $product->category?->name ?? 'Menu' }}</p><h3 class="mt-2 text-lg font-semibold">{{ $product->name }}</h3></div>
+                                <p class="shrink-0 text-xs font-bold">{{ $product->price ? 'Rp '.number_format($product->price, 0, ',', '.') : 'Tanya harga' }}</p>
+                                <a href="{{ route('produk.detail', $product->slug) }}" class="absolute inset-0"><span class="sr-only">Lihat {{ $product->name }}</span></a>
                             </div>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
-        @else
-            <div class="rounded-xl border border-dashed border-gray-300 bg-white p-10 text-center text-sm text-gray-500">Produk pilihan sedang disiapkan. Silakan kembali lagi segera.</div>
-        @endif
-
-    </div>
-</section>
-
-<section class="relative overflow-hidden bg-white px-4 py-20 sm:px-6 lg:px-8 lg:py-28" aria-labelledby="latest-insights-title">
-    <div class="pointer-events-none absolute -right-32 -top-32 h-80 w-80 rounded-full bg-secondary/8 blur-3xl" aria-hidden="true"></div>
-    <div class="mx-auto max-w-7xl">
-        <div class="mb-10 grid gap-6 border-b border-gray-200 pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div class="max-w-2xl">
-                <div class="mb-4 flex items-center gap-3">
-                    <span class="h-px w-9 bg-secondary" aria-hidden="true"></span>
-                    <p class="text-xs font-bold uppercase tracking-[.2em] text-primary">Jurnal Panama Corner</p>
+                        </article>
+                    @endforeach
                 </div>
-                <h2 id="latest-insights-title" class="text-3xl font-extrabold tracking-tight text-gray-950 sm:text-4xl">Wawasan, Cerita, dan Panduan Kopi</h2>
-                <p class="mt-3 text-sm leading-6 text-gray-600">Temukan pengetahuan praktis dari roastery kami—mulai dari perjalanan biji kopi hingga teknik seduh yang dapat Anda terapkan di rumah.</p>
-            </div>
-            <a href="{{ route('artikel') }}" class="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-primary px-5 text-xs font-bold text-primary transition hover:bg-primary hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
-                Jelajahi Semua Artikel <span aria-hidden="true">→</span>
-            </a>
-        </div>
-
-        @if($latestArticles->isNotEmpty())
-            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                @foreach($latestArticles as $article)
-                    @php $articleThumb = $article->getFirstMediaUrl('featured_image', 'thumb'); @endphp
-                    <article class="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-[0_8px_30px_rgba(15,23,42,.06)] transition duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_18px_45px_rgba(15,23,42,.11)]">
-                        <a href="{{ route('artikel.detail', $article->slug) }}" class="relative block aspect-[16/9] overflow-hidden bg-[#102521]" tabindex="-1" aria-hidden="true">
-                            @if($articleThumb)
-                                <img src="{{ $articleThumb }}" alt="" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">
-                            @else
-                                <div class="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(245,158,11,.28),transparent_42%),linear-gradient(135deg,#173d36,#081511)]"></div>
-                                <div class="absolute inset-0 flex items-center justify-center" aria-hidden="true">
-                                    <svg class="h-14 w-14 text-secondary/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M8 7h8M8 11h6"/></svg>
-                                </div>
-                            @endif
-                            <span class="absolute bottom-3 left-3 rounded-full bg-white/95 px-3 py-1.5 text-[9px] font-extrabold uppercase tracking-[.14em] text-primary shadow-sm backdrop-blur">{{ $article->category?->name ?? 'Artikel' }}</span>
-                        </a>
-
-                        <div class="flex flex-1 flex-col p-6">
-                            <div class="flex items-center gap-2 text-[10px] font-medium text-gray-400">
-                                <time datetime="{{ $article->published_at?->toDateString() }}">{{ $article->published_at?->translatedFormat('d M Y') }}</time>
-                                <span aria-hidden="true">•</span>
-                                <span>{{ $article->reading_time ?? 1 }} menit baca</span>
-                            </div>
-                            <h3 class="mt-3 text-lg font-extrabold leading-7 text-gray-950">
-                                <a href="{{ route('artikel.detail', $article->slug) }}" class="transition group-hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">{{ $article->title }}</a>
-                            </h3>
-                            <p class="mt-3 line-clamp-3 text-sm leading-6 text-gray-500">{{ $article->excerpt }}</p>
-                            <a href="{{ route('artikel.detail', $article->slug) }}" class="mt-6 inline-flex w-fit items-center gap-2 text-xs font-bold text-primary transition group-hover:gap-3" aria-label="Baca artikel: {{ $article->title }}">Baca Artikel <span aria-hidden="true">→</span></a>
-                        </div>
-                    </article>
-                @endforeach
             </div>
         @else
-            <div class="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-                <p class="text-sm font-semibold text-gray-700">Artikel terbaru sedang disiapkan.</p>
-                <p class="mt-1 text-xs text-gray-500">Kunjungi kembali jurnal kami untuk wawasan seputar kopi Nusantara.</p>
-            </div>
+            <div class="rounded-3xl border border-dashed border-[#d3d0c7] bg-[#f7f5ef] p-12 text-center text-sm text-[#68736e]">Sajian pilihan sedang dipersiapkan.</div>
         @endif
+    </div>
+</section>
+
+<section class="relative isolate overflow-hidden bg-[#0b2c25] px-5 py-24 text-white sm:px-8 lg:px-12 lg:py-32 xl:px-16">
+    <div class="absolute -right-24 -top-36 h-[520px] w-[520px] rounded-full border border-white/8"></div><div class="absolute -right-5 -top-10 h-[320px] w-[320px] rounded-full border border-secondary/15"></div>
+    <div class="home-reveal relative mx-auto max-w-5xl text-center">
+        <p class="text-[10px] font-semibold uppercase tracking-[.26em] text-secondary">Panama Corner</p>
+        <blockquote class="mt-7 text-3xl font-medium leading-[1.2] tracking-[-.04em] text-white sm:text-4xl lg:text-5xl">Mau makan, ngopi, kerja sebentar, atau kumpul bareng? Pilih meja yang nyaman dan pesan menu favoritmu.</blockquote>
+        <div class="mx-auto mt-9 h-px w-16 bg-secondary"></div>
+    </div>
+</section>
+
+<section class="bg-[#f5f2eb] px-5 py-20 sm:px-8 lg:px-12 lg:py-28 xl:px-16" aria-labelledby="journal-title">
+    <div class="mx-auto max-w-[1320px]">
+        <div class="home-reveal mb-10 flex items-end justify-between gap-6 lg:mb-14">
+            <div><p class="text-[11px] font-bold uppercase tracking-[.22em] text-primary">Jurnal & cerita</p><h2 id="journal-title" class="mt-4 text-3xl font-semibold tracking-[-.04em] text-[#10251f] sm:text-4xl lg:text-[2.75rem]">Catatan dari Panama Corner.</h2></div>
+            <a href="{{ route('artikel') }}" class="hidden text-[12px] font-bold uppercase tracking-[.12em] text-[#10251f] transition hover:text-primary sm:inline-flex sm:items-center sm:gap-3">Semua artikel <span>→</span></a>
+        </div>
+
+        @if($leadArticle)
+            <div class="grid gap-8 lg:grid-cols-12 lg:gap-12">
+                <article class="home-reveal group lg:col-span-7">
+                    <a href="{{ route('artikel.detail', $leadArticle->slug) }}" class="block aspect-[16/10] overflow-hidden rounded-[1.5rem] bg-[#16352e]">
+                        @if($leadArticle->getFirstMediaUrl('featured_image', 'large') ?: $leadArticle->getFirstMediaUrl('featured_image', 'thumb'))<img src="{{ $leadArticle->getFirstMediaUrl('featured_image', 'large') ?: $leadArticle->getFirstMediaUrl('featured_image', 'thumb') }}" alt="{{ $leadArticle->title }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.035]" loading="lazy" decoding="async">@endif
+                    </a>
+                    <p class="mt-6 text-[10px] font-bold uppercase tracking-[.18em] text-primary">{{ $leadArticle->category?->name ?? 'Cerita' }} · {{ $leadArticle->published_at?->translatedFormat('d M Y') }}</p>
+                    <h3 class="mt-3 text-2xl font-semibold leading-tight tracking-[-.03em] text-[#10251f] sm:text-3xl"><a href="{{ route('artikel.detail', $leadArticle->slug) }}" class="transition hover:text-primary">{{ $leadArticle->title }}</a></h3>
+                    <p class="mt-4 max-w-2xl text-sm leading-7 text-[#68736e]">{{ $leadArticle->excerpt }}</p>
+                </article>
+                <div class="lg:col-span-5">
+                    @foreach($sideArticles as $article)
+                        <article class="home-reveal group grid grid-cols-[116px_1fr] gap-5 border-b border-[#d4d0c5] py-6 first:pt-0 sm:grid-cols-[160px_1fr]">
+                            <a href="{{ route('artikel.detail', $article->slug) }}" class="aspect-square overflow-hidden rounded-xl bg-[#16352e]">
+                                @if($article->getFirstMediaUrl('featured_image', 'thumb'))<img src="{{ $article->getFirstMediaUrl('featured_image', 'thumb') }}" alt="{{ $article->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async">@endif
+                            </a>
+                            <div class="self-center"><p class="text-[9px] font-bold uppercase tracking-[.16em] text-primary">{{ $article->category?->name ?? 'Cerita' }}</p><h3 class="mt-2 text-base font-semibold leading-6 text-[#10251f] sm:text-lg"><a href="{{ route('artikel.detail', $article->slug) }}" class="transition hover:text-primary">{{ $article->title }}</a></h3><p class="mt-3 text-[10px] text-[#7c8581]">{{ $article->reading_time ?? 1 }} menit baca</p></div>
+                        </article>
+                    @endforeach
+                    <a href="{{ route('artikel') }}" class="mt-7 inline-flex items-center gap-3 text-[12px] font-bold uppercase tracking-[.12em] text-[#10251f] sm:hidden">Semua artikel <span>→</span></a>
+                </div>
+            </div>
+        @else
+            <div class="rounded-3xl border border-dashed border-[#d3d0c7] p-12 text-center text-sm text-[#68736e]">Cerita terbaru sedang disiapkan.</div>
+        @endif
+    </div>
+</section>
+
+<section class="bg-white px-5 py-10 sm:px-8 lg:px-12 lg:py-16 xl:px-16">
+    <div class="home-reveal mx-auto grid max-w-[1320px] overflow-hidden rounded-[2rem] bg-[#10251f] shadow-[0_30px_80px_rgba(16,37,31,.18)] lg:grid-cols-2">
+        <div class="flex flex-col justify-center p-8 text-white sm:p-12 lg:p-16">
+            <p class="text-[10px] font-bold uppercase tracking-[.22em] text-secondary">Temui kami</p>
+            <h2 class="mt-5 text-3xl font-semibold tracking-[-.04em] sm:text-4xl">Datang dan pilih menu favoritmu.</h2>
+            <p class="mt-6 max-w-lg text-sm leading-7 text-white/68">{{ $locationAddress }}</p>
+            @if($primaryLocation?->phone)<a href="tel:{{ preg_replace('/[^0-9+]/', '', $primaryLocation->phone) }}" class="mt-3 w-fit text-sm font-semibold text-white/90 hover:text-secondary">{{ $primaryLocation->phone }}</a>@endif
+            <a href="{{ route('lokasi') }}" class="mt-8 inline-flex w-fit items-center gap-3 rounded-full bg-secondary px-6 py-3 text-xs font-bold text-[#152019] transition hover:-translate-y-0.5 hover:brightness-105">Lihat lokasi & jam buka <span>↗</span></a>
+        </div>
+        <div class="relative min-h-[320px] overflow-hidden bg-[#28443d] lg:min-h-[480px]">
+            <img src="{{ $storyImage ?: $heroImage }}" alt="Suasana {{ $businessName }}" class="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async">
+            <div class="absolute inset-0 bg-gradient-to-r from-[#10251f]/55 to-transparent lg:from-[#10251f]/35"></div>
+        </div>
     </div>
 </section>
 @endsection

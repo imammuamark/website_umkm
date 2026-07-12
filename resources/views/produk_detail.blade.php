@@ -3,137 +3,55 @@
 @section('title', $product->name . ' | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
-@include('partials.page_hero', ['eyebrow' => $product->category?->name ?? 'Katalog Panama Corner', 'title' => $product->name, 'subtitle' => 'Detail produk, ketersediaan, dan cara pemesanan dari koleksi pilihan Panama Corner.'])
+@include('partials.page_hero', ['eyebrow' => $product->category?->name ?? 'Menu & Sajian', 'title' => $product->name, 'subtitle' => 'Detail sajian, harga, ketersediaan, dan informasi pemesanan.'])
 
-<section class="public-page-content py-20 bg-[#f7f8f7] flex-grow">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Product Grid Details -->
-        <div x-data="{ 
-            activeImage: '{{ $product->getFirstMediaUrl('gallery', 'large') ?: asset('images/coffee-placeholder.jpg') }}' 
-        }" class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
-            
-            <!-- Gallery Panel -->
-            <div class="space-y-4">
-                <!-- Large active image display -->
-                <div class="premium-surface aspect-square bg-white rounded-3xl overflow-hidden border border-gray-100 flex items-center justify-center p-8 relative">
-                    <img :src="activeImage" alt="{{ $product->name }}" class="object-contain max-h-full max-w-full rounded-2xl transform hover:scale-105 transition duration-300" />
+<section class="public-page-content flex-grow px-5 py-16 sm:px-8 lg:px-12 lg:py-24 xl:px-16">
+    <div class="mx-auto max-w-[1320px]">
+        @php($mediaList = $product->getMedia('gallery'))
+        <div x-data="{ activeImage: @js($product->resolvedImageUrl('large') ?: asset('images/coffee-placeholder.jpg')) }" class="grid items-start gap-10 lg:grid-cols-12 lg:gap-16">
+            <div class="home-reveal space-y-4 lg:col-span-7">
+                <div class="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-[#e5e2da] shadow-[0_28px_70px_rgba(16,37,31,.12)]">
+                    <img :src="activeImage" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-700">
+                    @if($product->is_bestseller)<span class="absolute left-5 top-5 rounded-full bg-secondary px-3 py-1.5 text-[9px] font-bold uppercase tracking-[.14em] text-[#172019]">Pilihan populer</span>@endif
                 </div>
-                
-                <!-- Thumbnails loop -->
-                @php
-                    $mediaList = $product->getMedia('gallery');
-                @endphp
                 @if($mediaList->count() > 1)
-                    <div class="grid grid-cols-5 gap-3">
+                    <div class="flex gap-3 overflow-x-auto pb-2" aria-label="Galeri foto produk">
                         @foreach($mediaList as $media)
-                            <button 
-                                @click="activeImage = '{{ $media->getUrl('large') }}'" 
-                                type="button" 
-                                class="aspect-square rounded-xl border border-gray-100 bg-gray-50 p-2 overflow-hidden hover:border-primary transition focus:outline-none"
-                                :class="{'border-primary ring-2 ring-primary/20': activeImage === '{{ $media->getUrl('large') }}'}"
-                            >
-                                <img src="{{ $media->getUrl('thumb') }}" alt="thumbnail" class="object-cover h-full w-full rounded-lg" />
+                            <button @click="activeImage = @js($media->getUrl('large'))" type="button" :aria-pressed="activeImage === @js($media->getUrl('large'))" class="h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 bg-white p-1 transition" :class="activeImage === @js($media->getUrl('large')) ? 'border-primary' : 'border-transparent hover:border-primary/35'">
+                                <img src="{{ $media->getUrl('thumb') }}" alt="Sudut foto {{ $loop->iteration }} dari {{ $product->name }}" class="h-full w-full rounded-lg object-cover" loading="lazy">
                             </button>
                         @endforeach
                     </div>
                 @endif
             </div>
 
-            <!-- Details Panel -->
-            <div class="premium-surface flex flex-col justify-between rounded-3xl bg-white p-7 sm:p-9">
-                <div class="space-y-6">
-                    <span class="inline-flex items-center gap-x-1.5 rounded-md bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                        {{ $product->category->name }}
-                    </span>
-                    
-                    <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 font-title tracking-tight">
-                        {{ $product->name }}
-                    </h1>
-                    
-                    <div class="flex items-center gap-4">
-                        @if($product->price)
-                            <div class="text-3xl font-extrabold text-gray-900">
-                                Rp {{ number_format($product->price, 0, ',', '.') }}
-                            </div>
-                        @else
-                            <div class="text-2xl font-extrabold text-gray-500">
-                                Hubungi Kami
-                            </div>
-                        @endif
-
-                        <!-- Stock status badge -->
-                        @if($product->stock_status === 'tersedia')
-                            <span class="inline-flex items-center gap-x-1.5 rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                Tersedia
-                            </span>
-                        @elseif($product->stock_status === 'habis')
-                            <span class="inline-flex items-center gap-x-1.5 rounded-full bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/20">
-                                Stok Habis
-                            </span>
-                        @elseif($product->stock_status === 'pre-order')
-                            <span class="inline-flex items-center gap-x-1.5 rounded-full bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-600/20">
-                                Pre-Order
-                            </span>
-                        @endif
-                    </div>
-                    
-                    <hr class="border-gray-100" />
-                    
-                    <div class="space-y-2">
-                        <h3 class="text-sm font-bold uppercase tracking-wider text-gray-400">Deskripsi Kopi</h3>
-                        <div class="text-sm text-gray-600 leading-relaxed space-y-4">
-                            {!! $product->description !!}
-                        </div>
-                    </div>
+            <article class="home-reveal lg:col-span-5 lg:sticky lg:top-24">
+                <div class="border-b border-[#d4d0c5] pb-7">
+                    <div class="flex items-center justify-between gap-4"><p class="text-[10px] font-bold uppercase tracking-[.2em] text-primary">{{ $product->category?->name ?? 'Sajian' }}</p><span class="text-[10px] font-semibold {{ $product->stock_status === 'tersedia' ? 'text-emerald-700' : 'text-amber-700' }}">● {{ $product->stock_status === 'tersedia' ? 'Tersedia' : ucfirst($product->stock_status) }}</span></div>
+                    <h1 class="mt-5 text-3xl font-semibold leading-tight tracking-[-.04em] text-[#10251f] sm:text-4xl">{{ $product->name }}</h1>
+                    <p class="mt-6 text-2xl font-semibold tracking-[-.03em] text-[#10251f]">{{ $product->price ? 'Rp '.number_format($product->price, 0, ',', '.') : 'Hubungi kami' }}</p>
                 </div>
-
-                <div class="pt-8 space-y-4">
-                    <a href="{{ $whatsappUrl }}" target="_blank" class="w-full inline-flex items-center justify-center px-6 py-4 rounded-xl text-base font-semibold text-white bg-green-500 hover:bg-green-600 transition shadow-lg shadow-green-500/20 transform hover:-translate-y-0.5">
-                        Pesan via WhatsApp (Instan)
-                    </a>
-                    <p class="text-center text-xs text-gray-400">
-                        Klik tombol di atas untuk menghubungi admin, rincian produk otomatis terisi di chat.
-                    </p>
+                <div class="py-7">
+                    <p class="text-[10px] font-bold uppercase tracking-[.18em] text-[#747d78]">Deskripsi Produk</p>
+                    <div class="mt-4 space-y-4 text-sm leading-7 text-[#5e6964]">{!! $product->description !!}</div>
                 </div>
-            </div>
-
+                @if((bool) \App\Models\SiteSetting::get('enable_whatsapp_order', true))
+                    <div class="border-t border-[#d4d0c5] pt-7"><a href="{{ $whatsappUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-[52px] w-full items-center justify-center gap-3 rounded-full bg-[#10251f] px-6 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-primary">Pesan via WhatsApp (Instan) <span>↗</span></a><p class="mt-3 text-center text-[10px] leading-5 text-[#7b847f]">Nama produk otomatis disertakan dalam pesan.</p></div>
+                @endif
+            </article>
         </div>
 
-        <!-- Related Products Section -->
-        @if($relatedProducts->count() > 0)
-            <div class="border-t border-gray-100 pt-16 space-y-8">
-                <h2 class="text-2xl font-bold tracking-tight text-gray-900 font-title">Mungkin Anda Suka (Rekomendasi)</h2>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        @if($relatedProducts->isNotEmpty())
+            <section class="mt-20 border-t border-[#d4d0c5] pt-12 lg:mt-28 lg:pt-16" aria-labelledby="related-title">
+                <div class="mb-9 flex items-end justify-between gap-5"><div><p class="text-[10px] font-bold uppercase tracking-[.2em] text-primary">Masih satu kategori</p><h2 id="related-title" class="mt-3 text-3xl font-semibold tracking-[-.04em] text-[#10251f]">Sajian lainnya.</h2></div><a href="{{ route('produk', ['category' => $product->category?->slug]) }}" class="hidden text-xs font-bold text-[#10251f] hover:text-primary sm:block">Lihat kategori →</a></div>
+                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach($relatedProducts as $relProduct)
-                        <div class="premium-product-card bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition duration-300 flex flex-col h-full group">
-                            <div class="aspect-square bg-gray-50 relative overflow-hidden flex items-center justify-center">
-                                @php
-                                    $relThumb = $relProduct->getFirstMediaUrl('gallery', 'thumb');
-                                @endphp
-                                @if($relThumb)
-                                    <img src="{{ $relThumb }}" alt="{{ $relProduct->name }}" class="object-cover w-full h-full group-hover:scale-105 transition duration-300">
-                                @else
-                                    <div class="text-gray-300 text-4xl">☕</div>
-                                @endif
-                            </div>
-                            
-                            <div class="p-4 flex-grow flex flex-col space-y-2">
-                                <span class="text-[9px] text-gray-400 font-semibold tracking-wider uppercase">{{ $relProduct->category->name }}</span>
-                                <h4 class="font-bold text-xs text-gray-900 font-title line-clamp-1 group-hover:text-primary transition">
-                                    <a href="{{ route('produk.detail', $relProduct->slug) }}">{{ $relProduct->name }}</a>
-                                </h4>
-                                <div class="text-sm font-extrabold text-gray-900 mt-auto pt-2">
-                                    Rp {{ number_format($relProduct->price, 0, ',', '.') }}
-                                </div>
-                            </div>
-                        </div>
+                        @php($relThumb = $relProduct->resolvedImageUrl('thumb'))
+                        <article class="home-reveal group"><a href="{{ route('produk.detail', $relProduct->slug) }}" class="block aspect-square overflow-hidden rounded-[1.25rem] bg-[#e4e1d9]">@if($relThumb)<img src="{{ $relThumb }}" alt="{{ $relProduct->name }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]" loading="lazy">@endif</a><p class="mt-4 text-[9px] font-bold uppercase tracking-[.16em] text-primary">{{ $relProduct->category?->name }}</p><h3 class="mt-2 font-semibold text-[#10251f]"><a href="{{ route('produk.detail', $relProduct->slug) }}" class="hover:text-primary">{{ $relProduct->name }}</a></h3><p class="mt-2 text-sm font-semibold text-[#4f5a55]">{{ $relProduct->price ? 'Rp '.number_format($relProduct->price, 0, ',', '.') : 'Hubungi kami' }}</p></article>
                     @endforeach
                 </div>
-            </div>
+            </section>
         @endif
-
     </div>
 </section>
 @endsection

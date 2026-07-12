@@ -125,6 +125,15 @@ class ArticleContentSanitizer
             }
 
             $element->setAttribute('loading', 'lazy');
+            $element->setAttribute('decoding', 'async');
+            $element->setAttribute('referrerpolicy', 'no-referrer');
+
+            foreach (['width', 'height'] as $dimension) {
+                $value = $element->getAttribute($dimension);
+                if ($value !== '' && (! ctype_digit($value) || (int) $value > 4096)) {
+                    $element->removeAttribute($dimension);
+                }
+            }
         }
     }
 
@@ -132,7 +141,11 @@ class ArticleContentSanitizer
     {
         $url = trim($url);
 
-        if ($url === '' || str_starts_with($url, '/') || str_starts_with($url, '#')) {
+        if ($url === '' || preg_match('/[\x00-\x1F\x7F]/', $url)) {
+            return false;
+        }
+
+        if ((str_starts_with($url, '/') && ! str_starts_with($url, '//')) || str_starts_with($url, '#')) {
             return true;
         }
 

@@ -25,6 +25,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage security',
             'manage content',
             'manage products',
+            'manage digital menu',
             'manage articles',
             'view articles',
             'create articles',
@@ -52,6 +53,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $editorRole->givePermissionTo([
             'manage content',
             'manage products',
+            'manage digital menu',
             'manage articles',
             'view articles',
             'create articles',
@@ -64,6 +66,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $staffRole = Role::findOrCreate('Staff');
         $staffRole->givePermissionTo([
             'manage products',
+            'manage digital menu',
             'manage articles',
             'view articles',
             'create articles',

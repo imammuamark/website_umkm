@@ -12,6 +12,18 @@ class CreateArticle extends CreateRecord
 {
     protected static string $resource = ArticleResource::class;
 
+    protected ?string $maxContentWidth = 'full';
+
+    public function getTitle(): string
+    {
+        return 'Buat Artikel Baru';
+    }
+
+    public function getSubheading(): ?string
+    {
+        return 'Susun konten, media, metadata, dan jadwal publikasi dalam satu ruang kerja editorial.';
+    }
+
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data = $this->prepareContent($data);
@@ -28,7 +40,8 @@ class CreateArticle extends CreateRecord
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label('Simpan Artikel');
+            ->label('Simpan Artikel')
+            ->icon('heroicon-o-check');
     }
 
     /** @param array<string, mixed> $data */

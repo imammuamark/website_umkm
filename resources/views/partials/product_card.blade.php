@@ -1,5 +1,5 @@
 @php
-    $thumb = $product->getFirstMediaUrl('gallery', 'large') ?: $product->getFirstMediaUrl('gallery', 'thumb');
+    $thumb = $product->resolvedImageUrl('large');
     $priceLabel = $product->price ? 'Rp ' . number_format($product->price, 0, ',', '.') : 'Hubungi Kami';
     $whatsappNumber = preg_replace('/\D+/', '', (string) \App\Models\SiteSetting::get('whatsapp_number', '6281234567890'));
     $whatsappText = str_replace(
@@ -19,8 +19,8 @@
     ];
 @endphp
 
-<article class="catalog-product-card group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_22px_48px_rgba(15,23,42,.12)]">
-    <div class="relative aspect-[4/3] overflow-hidden bg-[#e9ece9]">
+<article class="catalog-product-card home-reveal group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-[#dedbd2] bg-white/90 transition duration-500 hover:-translate-y-1 hover:border-primary/20 hover:shadow-[0_24px_55px_rgba(16,37,31,.1)]">
+    <div class="relative aspect-[4/3] overflow-hidden bg-[#e5e2da]">
         <div class="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
             @if($product->is_bestseller)
                 <span class="rounded-md bg-secondary px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-[.12em] text-[#211b10] shadow-sm">Terlaris</span>
@@ -49,17 +49,17 @@
         </div>
     </div>
 
-    <div class="flex flex-1 flex-col p-5">
+    <div class="flex flex-1 flex-col p-5 sm:p-6">
         <div class="flex items-center justify-between gap-3">
             <p class="text-[9px] font-extrabold uppercase tracking-[.15em] text-primary">{{ $product->category?->name ?? 'Produk Panama Corner' }}</p>
             <span class="text-[10px] font-semibold {{ $product->stock_status === 'tersedia' ? 'text-emerald-600' : 'text-gray-400' }}">{{ $product->stock_status === 'tersedia' ? '● Tersedia' : ucfirst($product->stock_status) }}</span>
         </div>
-        <h2 class="mt-3 text-base font-extrabold leading-6 text-gray-950"><a href="{{ route('produk.detail', $product->slug) }}" class="transition hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">{{ $product->name }}</a></h2>
+        <h2 class="mt-3 text-base font-semibold leading-6 tracking-[-.015em] text-[#10251f]"><a href="{{ route('produk.detail', $product->slug) }}" class="transition hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">{{ $product->name }}</a></h2>
         <p class="mt-2 line-clamp-2 text-xs leading-5 text-gray-500">{{ \Illuminate\Support\Str::limit(trim(strip_tags($product->description)), 110) }}</p>
 
         <div class="mt-auto flex items-end justify-between gap-4 border-t border-gray-100 pt-5">
-            <div><p class="text-[9px] font-semibold uppercase tracking-wider text-gray-400">Harga</p><p class="mt-1 text-base font-extrabold text-gray-950">{{ $priceLabel }}</p></div>
-            <a href="{{ route('produk.detail', $product->slug) }}" class="inline-flex min-h-10 items-center justify-center rounded-lg bg-primary px-4 text-[11px] font-bold text-white transition hover:-translate-y-0.5 hover:brightness-105">Lihat Detail</a>
+            <div><p class="text-[9px] font-semibold uppercase tracking-wider text-gray-400">Harga</p><p class="mt-1 text-base font-semibold text-[#10251f]">{{ $priceLabel }}</p></div>
+            <a href="{{ route('produk.detail', $product->slug) }}" class="inline-flex min-h-10 items-center justify-center rounded-full border border-[#10251f] px-4 text-[10px] font-bold text-[#10251f] transition hover:bg-[#10251f] hover:text-white">Detail →</a>
         </div>
     </div>
 </article>

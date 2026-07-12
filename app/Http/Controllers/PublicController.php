@@ -7,11 +7,15 @@ use App\Models\ArticleCategory;
 use App\Models\BusinessProfile;
 use App\Models\ContactMessage;
 use App\Models\Location;
+use App\Models\Page;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\SiteSetting;
+use App\Support\ArticleTableOfContents;
+use App\Support\ArticleVideo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PublicController extends Controller
 {
@@ -21,9 +25,19 @@ class PublicController extends Controller
     public function home()
     {
         $profile = BusinessProfile::first();
-        $featuredProducts = Product::featured()->take(3)->get();
-        $bestsellers = Product::bestseller()->take(4)->get();
-        $latestArticles = Article::published()->latest('published_at')->take(3)->get();
+        $featuredProducts = Product::featured()->with(['category', 'media'])->take(3)->get();
+        $bestsellers = Product::bestseller()->with(['category', 'media'])->take(4)->get();
+        $latestArticles = Article::published()->with(['category', 'media'])->latest('published_at')->take(3)->get();
+        $primaryLocation = Location::orderBy('id')->first();
+        $aboutPage = Page::published()->whereIn('slug', ['tentang-panama', 'tentang-kopi'])
+            ->with('media')
+            ->orderByRaw("CASE WHEN slug = 'tentang-panama' THEN 0 ELSE 1 END")
+            ->first();
+
+        $storyImage = $aboutPage?->getFirstMediaUrl('content_image', 'large')
+            ?: $aboutPage?->getResolvedHeroUrl()
+            ?: $latestArticles->first()?->getFirstMediaUrl('featured_image', 'large')
+            ?: $latestArticles->first()?->getFirstMediaUrl('featured_image', 'thumb');
 
         // Stats
         $stats = [
@@ -32,7 +46,16 @@ class PublicController extends Controller
             'locations_count' => Location::count(),
         ];
 
-        return view('home', compact('profile', 'featuredProducts', 'bestsellers', 'latestArticles', 'stats'));
+        return view('home', compact(
+            'profile',
+            'featuredProducts',
+            'bestsellers',
+            'latestArticles',
+            'stats',
+            'primaryLocation',
+            'aboutPage',
+            'storyImage',
+        ));
     }
 
     /**
@@ -63,7 +86,7 @@ class PublicController extends Controller
             ->orderBy('name')
             ->get();
 
-        $query = Product::query()->with('category');
+        $query = Product::query()->with(['category', 'media']);
 
         // Apply filters
         if ($request->filled('q')) {
@@ -117,15 +140,19 @@ class PublicController extends Controller
     /**
      * Display Product Detail Page.
      */
-    public function produkDetail($slug)
+    public function produkDetail(Request $request, string $slug)
     {
-        $product = Product::where('slug', $slug)->firstOrFail();
+        $product = Product::with(['category', 'media'])->where('slug', $slug)->firstOrFail();
 
-        // Increment views count safely
-        $product->increment('views_count');
+        $viewKey = 'viewed_product_'.$product->id;
+        if (! $request->session()->has($viewKey)) {
+            $product->increment('views_count');
+            $request->session()->put($viewKey, true);
+        }
 
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
+            ->with(['category', 'media'])
             ->take(4)
             ->get();
 
@@ -144,11 +171,14 @@ class PublicController extends Controller
     public function artikel(Request $request)
     {
         $categories = ArticleCategory::all();
-        $query = Article::published()->with(['category', 'author']);
+        $query = Article::published()->with(['category', 'author', 'media']);
 
         if ($request->filled('q')) {
-            $query->where('title', 'like', '%'.$request->input('q').'%')
-                ->orWhere('content', 'like', '%'.$request->input('q').'%');
+            $search = mb_substr(trim((string) $request->input('q')), 0, 100);
+            $query->where(function ($query) use ($search): void {
+                $query->where('title', 'like', '%'.$search.'%')
+                    ->orWhere('content', 'like', '%'.$search.'%');
+            });
         }
 
         if ($request->filled('category')) {
@@ -165,17 +195,35 @@ class PublicController extends Controller
     /**
      * Display Article Detail Page.
      */
-    public function artikelDetail($slug)
+    public function artikelDetail(string $slug, ArticleTableOfContents $tableOfContents)
     {
-        $article = Article::published()->where('slug', $slug)->firstOrFail();
+        $article = Article::published()->with(['category', 'author', 'media'])->where('slug', $slug)->firstOrFail();
 
         $relatedArticles = Article::published()
             ->where('category_id', $article->category_id)
             ->where('id', '!=', $article->id)
+            ->with(['category', 'media'])
             ->take(3)
             ->get();
 
-        return view('artikel_detail', compact('article', 'relatedArticles'));
+        $content = $tableOfContents->transform($article->content);
+        $articleVideos = collect($article->video_urls ?? [])
+            ->take(5)
+            ->map(function (array $video): ?array {
+                $resolved = ArticleVideo::resolve($video['url'] ?? null);
+
+                return $resolved ? [...$resolved, 'title' => trim((string) ($video['title'] ?? ''))] : null;
+            })
+            ->filter()
+            ->values();
+
+        return view('artikel_detail', [
+            'article' => $article,
+            'relatedArticles' => $relatedArticles,
+            'articleContent' => $content['html'],
+            'tableOfContents' => $content['items'],
+            'articleVideos' => $articleVideos,
+        ]);
     }
 
     /**
@@ -220,9 +268,16 @@ class PublicController extends Controller
 
         $trustedHosts = ['www.google.com', 'google.com', 'maps.google.com'];
 
+        parse_str((string) ($parts['query'] ?? ''), $query);
+        $isEmbedPath = str_starts_with($path, '/maps/embed');
+        $isSafePlaceQuery = $path === '/maps'
+            && ($query['output'] ?? null) === 'embed'
+            && filled($query['q'] ?? null)
+            && mb_strlen((string) $query['q']) <= 500;
+
         if (($parts['scheme'] ?? '') !== 'https'
             || ! in_array($host, $trustedHosts, true)
-            || ! str_starts_with($path, '/maps/embed')) {
+            || (! $isEmbedPath && ! $isSafePlaceQuery)) {
             return null;
         }
 
@@ -248,27 +303,62 @@ class PublicController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|max:150',
-            'phone' => 'nullable|string|max:20',
-            'message' => 'required|string|max:1000',
+            'name' => ['required', 'string', 'min:2', 'max:100'],
+            'email' => ['required', 'string', 'email:rfc', 'max:150'],
+            'phone' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+() .-]+$/'],
+            'message' => ['required', 'string', 'min:10', 'max:1000'],
+            'website' => ['nullable', 'string', 'max:0'],
+            'source_page' => ['nullable', Rule::in(['kontak'])],
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json([
+                'message' => 'Data yang diberikan tidak valid.',
+                'errors' => $validator->errors(),
+            ], 422);
         }
 
+        $validated = $validator->validated();
+
         ContactMessage::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'message' => $request->input('message'),
+            'name' => trim($validated['name']),
+            'email' => mb_strtolower(trim($validated['email'])),
+            'phone' => filled($validated['phone'] ?? null) ? trim($validated['phone']) : null,
+            'message' => trim($validated['message']),
             'status' => 'baru',
-            'source_page' => $request->input('source_page', 'kontak'),
+            'source_page' => 'kontak',
         ]);
 
         return response()->json([
             'message' => 'Pesan Anda berhasil dikirim. Tim kami akan segera menghubungi Anda!',
         ]);
+    }
+
+    /**
+     * Display a dynamic custom page.
+     */
+    public function customPage(string $slug)
+    {
+        $page = Page::published()->where('slug', $slug)->firstOrFail();
+
+        $extraData = [];
+        if ($page->template === 'locations') {
+            $extraData['locations'] = Location::orderBy('name')->get();
+            $extraData['mapsEmbedUrl'] = $this->trustedGoogleMapsEmbedUrl(
+                SiteSetting::get('google_maps_embed')
+            );
+        } elseif ($page->template === 'about') {
+            $profile = BusinessProfile::first();
+            $extraData['profile'] = $profile;
+            $extraData['profileStats'] = [
+                'years' => $profile?->founded_year
+                    ? max(1, now()->year - (int) $profile->founded_year)
+                    : null,
+                'products' => Product::count(),
+                'locations' => Location::count(),
+            ];
+        }
+
+        return view('halaman', array_merge(compact('page'), $extraData));
     }
 }

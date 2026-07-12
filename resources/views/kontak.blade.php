@@ -3,9 +3,9 @@
 @section('title', 'Hubungi Kami | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
-@include('partials.page_hero', ['eyebrow' => 'Mari Terhubung', 'title' => 'Hubungi Kami', 'subtitle' => 'Konsultasikan kebutuhan produk, pemesanan personal, maupun kerja sama bisnis bersama tim Panama Corner.'])
+@include('partials.page_hero', array_merge(['eyebrow' => 'Mari Terhubung', 'title' => 'Hubungi Kami', 'subtitle' => 'Tanyakan informasi menu, kunjungan, atau hal lain kepada tim Panama Corner.'], \App\Models\SiteSetting::pageHero('contact')))
 
-<section class="public-page-content flex-grow bg-[#f4f5f3] py-20 lg:py-24">
+<section class="public-page-content flex-grow py-16 lg:py-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div
             x-data="{
@@ -53,7 +53,7 @@
                     .finally(() => this.loading = false);
                 }
             }"
-            class="contact-workspace overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_28px_80px_rgba(15,23,42,.11)]"
+            class="contact-workspace home-reveal overflow-hidden rounded-[1.75rem] border border-[#d8d4ca] bg-white shadow-[0_28px_80px_rgba(16,37,31,.09)]"
         >
             <div class="grid lg:grid-cols-[.82fr_1.45fr]">
                 <aside class="relative isolate overflow-hidden bg-[#0b2420] p-8 text-white sm:p-10 lg:p-12">
@@ -62,7 +62,7 @@
                     <div class="absolute -bottom-12 -right-8 -z-10 h-40 w-40 rounded-full border border-white/10"></div>
 
                     <p class="text-[10px] font-bold uppercase tracking-[.22em] text-secondary">Panama Corner</p>
-                    <h2 class="mt-4 text-3xl font-extrabold leading-tight tracking-tight">Mari mulai percakapan yang bermakna.</h2>
+                    <h2 class="mt-4 text-3xl font-semibold leading-tight tracking-[-.035em]">Ada yang ingin ditanyakan?</h2>
                     <p class="mt-4 text-sm leading-7 text-white/65">Sampaikan kebutuhan Anda dengan jelas. Tim kami akan meninjau pesan dan menghubungi Anda melalui kanal yang diberikan.</p>
 
                     <div class="mt-10 space-y-6">
@@ -92,7 +92,7 @@
                 <div class="p-7 sm:p-10 lg:p-12">
                     <div class="mb-8">
                         <p class="text-[10px] font-bold uppercase tracking-[.18em] text-primary">Formulir Kontak</p>
-                        <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-gray-950">Ceritakan kebutuhan Anda</h2>
+                        <h2 class="mt-2 text-2xl font-semibold tracking-[-.025em] text-[#10251f]">Ceritakan kebutuhan Anda</h2>
                         <p class="mt-2 text-sm text-gray-500">Kolom bertanda <span class="text-red-500">*</span> wajib diisi.</p>
                     </div>
 
@@ -126,7 +126,7 @@
 
                         <div class="space-y-2">
                             <div class="flex items-center justify-between gap-4"><label for="message" class="block text-xs font-bold text-gray-700">Pesan <span class="text-red-500">*</span></label><span class="text-[10px] font-medium text-gray-400" x-text="`${message.length}/1000`"></span></div>
-                            <textarea id="message" x-model="message" rows="6" maxlength="1000" :aria-invalid="Boolean(errors.message)" class="contact-input block w-full resize-y rounded-xl px-4 py-3 text-sm leading-6 outline-none" placeholder="Jelaskan kebutuhan, jumlah produk, atau bentuk kerja sama yang Anda pertimbangkan..." required></textarea>
+                            <textarea id="message" x-model="message" rows="6" maxlength="1000" :aria-invalid="Boolean(errors.message)" class="contact-input block w-full resize-y rounded-xl px-4 py-3 text-sm leading-6 outline-none" placeholder="Tuliskan pertanyaan atau informasi yang ingin Anda sampaikan..." required></textarea>
                             <template x-if="errors.message"><p class="text-xs font-medium text-red-600" x-text="errors.message[0]"></p></template>
                         </div>
 

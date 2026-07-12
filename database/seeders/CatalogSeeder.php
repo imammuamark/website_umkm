@@ -4,12 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\Article;
 use App\Models\ArticleCategory;
-use App\Models\Location;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class CatalogSeeder extends Seeder
 {
@@ -18,33 +16,6 @@ class CatalogSeeder extends Seeder
      */
     public function run(): void
     {
-        Location::updateOrCreate(
-            ['name' => 'Panama Corner Bandung Main Roastery'],
-            [
-                'address' => 'Jl. Merdeka No. 56, Citarum, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115',
-                'latitude' => -6.91019680,
-                'longitude' => 107.61864200,
-                'phone' => '+62 812-3456-7890',
-                'operating_hours' => [
-                    'Senin - Jumat' => '09:00 - 21:00',
-                    'Sabtu - Minggu' => '08:00 - 22:00',
-                ]
-            ]
-        );
-
-        Location::updateOrCreate(
-            ['name' => 'Panama Corner Jakarta Coffee Experience Bar'],
-            [
-                'address' => 'Jl. Sudirman No. 12, Senayan, Kec. Kebayoran Baru, Jakarta Selatan, DKI Jakarta 12190',
-                'latitude' => -6.22384700,
-                'longitude' => 106.80829800,
-                'phone' => '+62 812-3456-7891',
-                'operating_hours' => [
-                    'Senin - Minggu' => '07:00 - 22:00',
-                ]
-            ]
-        );
-
         // 2. Product Categories
         $beans = ProductCategory::updateOrCreate(
             ['name' => 'Biji Kopi Premium'],
@@ -152,9 +123,10 @@ class CatalogSeeder extends Seeder
                 'excerpt' => 'Pelajari langkah-langkah mudah menyeduh kopi menggunakan metode V60 pour over untuk menghasilkan rasa kopi yang bersih, manis, dan kaya rasa.',
                 'meta_title' => 'Cara Seduh Kopi V60 Rumahan Terbaik | Panduan V60 Pemula',
                 'meta_description' => 'Ingin menyeduh kopi V60 yang manis dan tidak terlalu pahit? Simak panduan praktis BARISTA Panama Corner di sini.',
+                'workflow_status' => 'published',
                 'status' => 'published',
                 'published_at' => now(),
-                'reading_time' => 3
+                'reading_time' => 3,
             ]
         );
 
@@ -168,9 +140,10 @@ class CatalogSeeder extends Seeder
                 'excerpt' => 'Ketahui bagaimana proses pengolahan pasca-panen biji kopi mempengaruhi rasa akhir kopi Anda. Perbedaan mendasar proses wash, natural, dan honey.',
                 'meta_title' => 'Pengaruh Proses Pasca Panen Kopi Terhadap Rasa | Wash vs Honey vs Natural',
                 'meta_description' => 'Apakah perbedaan rasa kopi proses wash, honey, dan natural? Temukan jawabannya agar Anda tidak salah memilih biji kopi favorit.',
+                'workflow_status' => 'published',
                 'status' => 'published',
                 'published_at' => now()->subDays(2),
-                'reading_time' => 4
+                'reading_time' => 4,
             ]
         );
     }

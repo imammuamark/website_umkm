@@ -27,6 +27,7 @@ class Article extends Model implements HasMedia
         'content',
         'editor_mode',
         'featured_image',
+        'video_urls',
         'excerpt',
         'meta_title',
         'meta_description',
@@ -42,6 +43,7 @@ class Article extends Model implements HasMedia
         'published_at' => 'datetime',
         'reviewed_at' => 'datetime',
         'reading_time' => 'integer',
+        'video_urls' => 'array',
     ];
 
     protected static function boot()
@@ -125,6 +127,20 @@ class Article extends Model implements HasMedia
                 $this->addMediaConversion('large')
                     ->width(1200)
                     ->height(630)
+                    ->queued();
+            });
+
+        $this->addMediaCollection('content_images')
+            ->registerMediaConversions(function (Media $media) {
+                $this->addMediaConversion('thumb')
+                    ->width(480)
+                    ->height(320)
+                    ->sharpen(8)
+                    ->nonQueued();
+
+                $this->addMediaConversion('content')
+                    ->width(1440)
+                    ->sharpen(6)
                     ->queued();
             });
     }

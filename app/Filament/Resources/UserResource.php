@@ -10,13 +10,16 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
     protected static ?string $navigationGroup = 'Pengaturan Keamanan';
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
@@ -40,6 +43,7 @@ class UserResource extends Resource
                             ->password()
                             ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (string $context): bool => $context === 'create')
+                            ->rule(Password::default())
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                             ->placeholder(fn (string $context): string => $context === 'edit' ? 'Biarkan kosong jika tidak diubah' : ''),
 
@@ -53,7 +57,7 @@ class UserResource extends Resource
                         Forms\Components\Toggle::make('is_active')
                             ->label('Status Aktif')
                             ->default(true),
-                    ])->columns(2)
+                    ])->columns(2),
             ]);
     }
 

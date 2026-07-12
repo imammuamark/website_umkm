@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\DigitalMenuCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -14,7 +15,12 @@ class ProductCategory extends Model
         'slug',
         'description',
         'parent_id',
+        'is_menu_visible',
+        'menu_sort_order',
+        'menu_display_name',
     ];
+
+    protected $casts = ['is_menu_visible' => 'boolean', 'menu_sort_order' => 'integer'];
 
     protected static function boot()
     {
@@ -25,6 +31,9 @@ class ProductCategory extends Model
                 $category->slug = Str::slug($category->name);
             }
         });
+
+        static::saved(fn () => DigitalMenuCache::flush());
+        static::deleted(fn () => DigitalMenuCache::flush());
     }
 
     public function parent()

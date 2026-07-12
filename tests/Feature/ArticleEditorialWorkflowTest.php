@@ -22,6 +22,8 @@ class ArticleEditorialWorkflowTest extends TestCase
             <script>alert('xss')</script>
             <a href="javascript:alert(1)" target="_blank">Tautan</a>
             <img src="data:text/html;base64,WA==" onerror="alert(1)">
+            <img src="//attacker.example/tracker.png">
+            <a href="//attacker.example/phishing">Protocol relative</a>
             <a href="https://example.com" target="_blank">Eksternal</a>
             HTML);
 
@@ -30,6 +32,7 @@ class ArticleEditorialWorkflowTest extends TestCase
         $this->assertStringNotContainsString('onclick', $clean);
         $this->assertStringNotContainsString('javascript:', $clean);
         $this->assertStringNotContainsString('data:', $clean);
+        $this->assertStringNotContainsString('attacker.example', $clean);
         $this->assertStringContainsString('rel="noopener noreferrer"', $clean);
     }
 
@@ -97,6 +100,30 @@ class ArticleEditorialWorkflowTest extends TestCase
 
         $this->assertSame('Judul Kopi Panama Terlezat', $article->fresh()->meta_title);
         $this->assertSame('Ini ringkasan kopi panama yang lezat sekali.', $article->fresh()->meta_description);
+    }
+
+    public function test_article_detail_renders_toc_and_only_trusted_video_embeds(): void
+    {
+        [$author, $category] = $this->editorialDependencies();
+        $article = Article::create(array_merge(
+            $this->articleData($author, $category, 'published'),
+            [
+                'slug' => 'artikel-dengan-media',
+                'published_at' => now()->subMinute(),
+                'content' => '<h2>Langkah Persiapan</h2><p>Isi artikel.</p>',
+                'video_urls' => [
+                    ['title' => 'Panduan video', 'url' => 'https://youtu.be/BY31NstC_t4'],
+                    ['title' => 'Tidak aman', 'url' => 'https://youtube.com.evil.test/watch?v=BY31NstC_t4'],
+                ],
+            ]
+        ));
+
+        $response = $this->get(route('artikel.detail', $article->slug));
+
+        $response->assertOk()
+            ->assertSee('href="#langkah-persiapan"', false)
+            ->assertSee('https://www.youtube-nocookie.com/embed/BY31NstC_t4')
+            ->assertDontSee('youtube.com.evil.test');
     }
 
     /** @return array{User, ArticleCategory} */

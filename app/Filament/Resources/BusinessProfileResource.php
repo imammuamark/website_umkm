@@ -5,19 +5,22 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BusinessProfileResource\Pages;
 use App\Models\BusinessProfile;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class BusinessProfileResource extends Resource
 {
     protected static ?string $model = BusinessProfile::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+
     protected static ?string $navigationGroup = 'Profil Usaha';
+
     protected static ?string $navigationLabel = 'Profil Usaha';
+
     protected static ?string $modelLabel = 'Profil Usaha';
 
     public static function form(Form $form): Form
@@ -29,7 +32,7 @@ class BusinessProfileResource extends Resource
                         Forms\Components\Tabs\Tab::make('Identitas Usaha')
                             ->icon('heroicon-o-identification')
                             ->schema([
-                                Forms\Components\Grid::make(3)
+                                Forms\Components\Grid::make(4)
                                     ->schema([
                                         Forms\Components\Group::make([
                                             Forms\Components\TextInput::make('business_name')
@@ -40,7 +43,9 @@ class BusinessProfileResource extends Resource
                                                 ->label('Tahun Berdiri')
                                                 ->numeric()
                                                 ->placeholder('Contoh: 2021')
-                                                ->required(),
+                                                ->minValue(1900)
+                                                ->maxValue((int) date('Y'))
+                                                ->helperText('Opsional. Isi hanya jika tahun berdiri sudah terverifikasi.'),
                                         ])->columnSpan(2),
                                         Forms\Components\Section::make('Logo Brand')
                                             ->schema([
@@ -48,37 +53,53 @@ class BusinessProfileResource extends Resource
                                                     ->label('')
                                                     ->collection('logo')
                                                     ->avatar()
+                                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                                    ->maxSize(2048)
                                                     ->alignCenter()
                                                     ->imageResizeMode('force')
                                                     ->imageCropAspectRatio('1:1')
                                                     ->imageResizeTargetWidth('200')
                                                     ->imageResizeTargetHeight('200'),
                                             ])->columnSpan(1),
+                                        Forms\Components\Section::make('Foto Banner Tentang')
+                                            ->schema([
+                                                SpatieMediaLibraryFileUpload::make('about_image')
+                                                    ->label('')
+                                                    ->collection('about_image')
+                                                    ->image()
+                                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                                    ->maxSize(5120)
+                                                    ->imageResizeMode('cover')
+                                                    ->imageCropAspectRatio('16:9')
+                                                    ->alignCenter(),
+                                            ])->columnSpan(1),
                                     ]),
                                 Forms\Components\RichEditor::make('description')
                                     ->label('Deskripsi Usaha (Storytelling Brand)')
-                                    ->placeholder('Tuliskan kisah perjalanan roastery dan filosofi bisnis Anda...')
+                                    ->placeholder('Tuliskan profil singkat, karakter, dan pengalaman yang ditawarkan usaha Anda...')
                                     ->required(),
                             ]),
-                        
-                        Forms\Components\Tabs\Tab::make('Visi & Misi')
+
+                        Forms\Components\Tabs\Tab::make('Arah & Prinsip')
                             ->icon('heroicon-o-sparkles')
                             ->schema([
                                 Forms\Components\Grid::make(2)
                                     ->schema([
                                         Forms\Components\Textarea::make('vision')
-                                            ->label('Visi Perusahaan')
-                                            ->placeholder('Tuliskan visi jangka panjang brand...')
+                                            ->label('Arah / Tujuan Usaha')
+                                            ->placeholder('Tuliskan tujuan atau pengalaman yang ingin diwujudkan...')
+                                            ->helperText('Ditampilkan pada kartu pertama di halaman profil.')
                                             ->rows(5)
                                             ->required(),
                                         Forms\Components\Textarea::make('mission')
-                                            ->label('Misi Perusahaan')
-                                            ->placeholder('Tuliskan langkah-langkah misi yang dijalankan...')
+                                            ->label('Prinsip / Komitmen')
+                                            ->placeholder('Tuliskan satu prinsip per baris...')
+                                            ->helperText('Setiap baris akan ditampilkan sebagai butir terpisah pada kartu kedua.')
                                             ->rows(5)
                                             ->required(),
                                     ]),
                             ]),
-                        
+
                         Forms\Components\Tabs\Tab::make('Sertifikasi & Legalitas')
                             ->icon('heroicon-o-document-check')
                             ->schema([
@@ -112,7 +133,7 @@ class BusinessProfileResource extends Resource
                                     ->itemLabel(fn (array $state): ?string => $state['name'] ?? 'Dokumen Legalitas')
                                     ->grid(2),
                             ]),
-                    ])->columnSpanFull()
+                    ])->columnSpanFull(),
             ]);
     }
 

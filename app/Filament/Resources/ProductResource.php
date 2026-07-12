@@ -5,20 +5,22 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+
     protected static ?string $navigationGroup = 'Manajemen Produk';
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
@@ -34,7 +36,7 @@ class ProductResource extends Resource
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
-                                
+
                                 Forms\Components\TextInput::make('slug')
                                     ->label('Slug')
                                     ->required()
@@ -49,11 +51,25 @@ class ProductResource extends Resource
                         Forms\Components\Section::make('Galeri Foto Produk')
                             ->schema([
                                 SpatieMediaLibraryFileUpload::make('gallery')
-                                    ->label('Foto Produk (Multi-angle)')
+                                    ->hiddenLabel()
+                                    ->helperText('Unggah hingga 12 foto sekaligus. Seret kartu foto untuk mengatur urutan; foto pertama menjadi gambar utama katalog.')
                                     ->collection('gallery')
+                                    ->conversion('thumb')
+                                    ->image()
                                     ->multiple()
-                                    ->maxFiles(5)
-                                    ->responsiveImages()
+                                    ->appendFiles()
+                                    ->reorderable()
+                                    ->maxFiles(12)
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                    ->maxSize(5120)
+                                    ->maxParallelUploads(3)
+                                    ->panelLayout('grid')
+                                    ->imagePreviewHeight('160')
+                                    ->imageEditor()
+                                    ->imageEditorAspectRatios(['1:1', '4:3', '16:9'])
+                                    ->orientImagesFromExif()
+                                    ->openable()
+                                    ->downloadable()
                                     ->columnSpanFull(),
                             ]),
                     ])->columnSpan(2),
@@ -91,10 +107,33 @@ class ProductResource extends Resource
                                 Forms\Components\Toggle::make('is_featured')
                                     ->label('Produk Unggulan')
                                     ->helperText('Tampilkan di halaman utama'),
-                                
+
                                 Forms\Components\Toggle::make('is_bestseller')
                                     ->label('Terlaris (Bestseller)')
                                     ->helperText('Beri lencana terlaris'),
+                            ]),
+
+                        Forms\Components\Section::make('Digital Menu')
+                            ->description('Atur penampilan produk pada Mode Menu dan QR.')
+                            ->icon('heroicon-o-qr-code')
+                            ->schema([
+                                Forms\Components\Toggle::make('is_menu_visible')
+                                    ->label('Tampilkan di Digital Menu')
+                                    ->default(true),
+                                Forms\Components\TextInput::make('menu_sort_order')
+                                    ->label('Urutan Menu')
+                                    ->numeric()
+                                    ->minValue(0)
+                                    ->default(0),
+                                Forms\Components\TextInput::make('menu_badge')
+                                    ->label('Badge Khusus')
+                                    ->placeholder('Contoh: Favorit')
+                                    ->maxLength(40),
+                                Forms\Components\Textarea::make('menu_short_description')
+                                    ->label('Deskripsi Ringkas')
+                                    ->helperText('Maksimal 220 karakter. Jika kosong, diambil dari deskripsi produk.')
+                                    ->rows(3)
+                                    ->maxLength(220),
                             ]),
                     ])->columnSpan(1),
             ])->columns(3);
@@ -140,6 +179,11 @@ class ProductResource extends Resource
                     ->boolean()
                     ->sortable(),
 
+                Tables\Columns\IconColumn::make('is_menu_visible')
+                    ->label('Digital Menu')
+                    ->boolean()
+                    ->sortable(),
+
                 Tables\Columns\IconColumn::make('is_bestseller')
                     ->label('Terlaris')
                     ->boolean()
@@ -155,7 +199,7 @@ class ProductResource extends Resource
                 Tables\Filters\SelectFilter::make('category_id')
                     ->label('Kategori')
                     ->relationship('category', 'name'),
-                
+
                 Tables\Filters\SelectFilter::make('stock_status')
                     ->label('Status Stok')
                     ->options([

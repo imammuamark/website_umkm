@@ -17,7 +17,9 @@ class ProductCategoryResource extends Resource
     protected static ?string $model = ProductCategory::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
+
     protected static ?string $navigationGroup = 'Manajemen Produk';
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
@@ -44,6 +46,7 @@ class ProductCategoryResource extends Resource
                                 if ($record) {
                                     $query->where('id', '!=', $record->id);
                                 }
+
                                 return $query->pluck('name', 'id');
                             })
                             ->searchable()
@@ -52,7 +55,23 @@ class ProductCategoryResource extends Resource
                         Forms\Components\Textarea::make('description')
                             ->label('Deskripsi Kategori')
                             ->columnSpanFull(),
-                    ])->columns(2)
+
+                        Forms\Components\Toggle::make('is_menu_visible')
+                            ->label('Tampilkan di Digital Menu')
+                            ->default(true),
+
+                        Forms\Components\TextInput::make('menu_sort_order')
+                            ->label('Urutan Digital Menu')
+                            ->numeric()
+                            ->minValue(0)
+                            ->default(0),
+
+                        Forms\Components\TextInput::make('menu_display_name')
+                            ->label('Nama Tampilan Digital Menu')
+                            ->placeholder('Opsional, default mengikuti nama kategori')
+                            ->maxLength(80)
+                            ->columnSpanFull(),
+                    ])->columns(2),
             ]);
     }
 
@@ -77,6 +96,11 @@ class ProductCategoryResource extends Resource
                 Tables\Columns\TextColumn::make('products_count')
                     ->label('Jumlah Produk')
                     ->counts('products')
+                    ->sortable(),
+
+                Tables\Columns\IconColumn::make('is_menu_visible')
+                    ->label('Digital Menu')
+                    ->boolean()
                     ->sortable(),
             ])
             ->filters([

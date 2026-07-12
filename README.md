@@ -1,6 +1,6 @@
 # Website Profil & Katalog Digital UMKM
 
-Template website company profile, katalog produk, artikel, lokasi cabang, dan lead capture untuk berbagai jenis UMKM. Aplikasi dilengkapi CMS berbasis Filament agar identitas usaha, konten, pengguna, tampilan, SEO, serta integrasi pemasaran dapat dikelola tanpa mengubah kode.
+Template website company profile, katalog dan menu digital, artikel, lokasi cabang, serta lead capture untuk berbagai jenis UMKM. Aplikasi dilengkapi CMS berbasis Filament agar identitas usaha, konten, pengguna, tampilan, footer, SEO, dan integrasi pemasaran dapat dikelola tanpa mengubah kode.
 
 Template ini dapat disesuaikan untuk usaha kuliner, kerajinan, fesyen, jasa profesional, retail, agribisnis, industri kreatif, dan kebutuhan profil bisnis lainnya.
 
@@ -20,16 +20,23 @@ Template ini dapat disesuaikan untuk usaha kuliner, kerajinan, fesyen, jasa prof
 - Profil usaha, visi–misi, legalitas, dan informasi brand
 - Katalog produk dengan pencarian, kategori, rentang harga, sorting, dan quick view
 - Detail produk, galeri, rekomendasi, dan pemesanan melalui WhatsApp
-- Jurnal/artikel dengan kategori, pencarian, metadata SEO, dan artikel terkait
+- Mode menu digital yang dapat dibuka melalui tautan atau QR code
+- Beberapa mode tampilan menu untuk desktop dan perangkat seluler
+- Jurnal/artikel dengan kategori, pencarian, daftar isi, galeri gambar, video, metadata SEO, dan artikel terkait
 - Direktori lokasi, jam operasional, peta, telepon, dan petunjuk arah
 - Form kontak dengan validasi, honeypot, rate limiting, serta pengelolaan leads
-- Theme customizer, structured data, Open Graph, dan integrasi analytics
+- Halaman CMS dinamis dengan hero upload/URL dan widget konten
+- Theme customizer untuk warna, font, hero, favicon, footer, dan preview aktual
+- Structured data, Open Graph, dan integrasi analytics
 
 ### Admin dashboard
 
 - Dashboard berbasis Filament
 - CRUD profil usaha, produk, kategori, artikel, lokasi, dan pesan masuk
-- Media library dengan image conversion
+- Galeri multi-gambar produk dengan pengurutan gambar utama
+- Editor artikel visual/HTML, workflow editorial, preview, gambar, dan video
+- Konfigurasi serta QR code menu digital dalam format siap cetak
+- Media library dengan image conversion dan validasi upload
 - Pengelolaan pengguna, role, dan permission
 - Penggantian password dan autentikasi dua faktor
 - Activity log
@@ -70,11 +77,27 @@ cp .env.example .env
 php artisan key:generate
 ```
 
+Jika perintah `composer` belum tersedia secara global tetapi repository memiliki `composer.phar`, gunakan:
+
+```bash
+php composer.phar install
+```
+
+Untuk pengembangan lokal, ubah konfigurasi berikut pada `.env` hasil salinan:
+
+```dotenv
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
+SESSION_SECURE_COOKIE=false
+```
+
 Untuk SQLite:
 
 ```bash
 touch database/database.sqlite
 php artisan migrate --seed
+php artisan storage:link
 ```
 
 Bangun aset dan jalankan aplikasi:
@@ -84,7 +107,7 @@ npm run build
 php artisan serve
 ```
 
-Aplikasi dapat diakses melalui `http://127.0.0.1:8000`, sedangkan dashboard tersedia di `/admin`.
+Aplikasi dapat diakses melalui `http://127.0.0.1:8000`, dashboard tersedia di `/admin`, dan menu digital tersedia di `/menu` jika fitur tersebut diaktifkan.
 
 Untuk menjalankan server aplikasi, queue, log viewer, dan Vite secara bersamaan:
 
@@ -127,6 +150,8 @@ Setelah instalasi, sesuaikan bagian berikut melalui dashboard admin:
 6. Nomor WhatsApp dan template pesan pemesanan
 7. Email, media sosial, legalitas, serta informasi kontak
 8. Google Analytics, Meta Pixel, dan integrasi pemasaran lain jika digunakan
+9. Mode tampilan, kategori, access point, dan QR code menu digital
+10. Navigasi, halaman CMS, hero setiap halaman, dan footer website
 
 Data contoh dari seeder ditujukan untuk pengembangan. Ganti atau hapus data tersebut sebelum aplikasi digunakan oleh usaha baru.
 
@@ -146,7 +171,7 @@ npm run build
 ./vendor/bin/pint --test
 ```
 
-Test suite mencakup route publik, security headers, form kontak, honeypot, akses admin, penanganan data profil parsial, dan validasi embed Google Maps.
+Test suite mencakup route publik, security headers, form kontak, honeypot, akses admin, workflow artikel, media, halaman CMS, katalog, menu digital, footer, WhatsApp, serta validasi embed Google Maps.
 
 ## Keamanan
 
@@ -162,6 +187,10 @@ Implementasi keamanan yang tersedia meliputi:
 - Validasi input dan ORM parameter binding
 - Honeypot serta throttling form kontak
 - Whitelist URL Google Maps tanpa merender HTML admin secara mentah
+- Sanitasi HTML artikel dan halaman CMS
+- Validasi URL video serta pembatasan provider embed
+- Validasi MIME, ukuran, dan jumlah media upload
+- Cache menu digital yang dapat diinvalidasi saat data berubah
 - Activity log untuk aktivitas administratif
 
 Untuk produksi, HTTPS wajib diaktifkan dan `APP_DEBUG` harus bernilai `false`. Lakukan audit dependency, backup terenkripsi, monitoring, dan security review secara berkala.
@@ -200,7 +229,7 @@ app/
 
 database/
 ├── migrations/        # Struktur database
-└── seeders/           # Data awal pengembangan
+└── seeders/           # Data awal dan aset demo pengembangan
 
 resources/
 ├── css/               # Tailwind dan design system
@@ -208,7 +237,8 @@ resources/
 └── views/             # Blade templates publik dan admin
 
 tests/
-└── Feature/           # Pengujian route dan keamanan
+├── Feature/           # Pengujian integrasi, route, CMS, dan keamanan
+└── Unit/              # Pengujian komponen pemrosesan konten
 ```
 
 ## Dokumentasi Produk

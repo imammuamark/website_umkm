@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ArticleResource\Pages;
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Rules\TrustedArticleVideoUrl;
 use Filament\Forms;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
@@ -16,6 +17,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ArticleResource extends Resource
 {
@@ -37,8 +40,8 @@ class ArticleResource extends Resource
             ->schema([
                 Forms\Components\Group::make()
                     ->schema([
-                        Forms\Components\Section::make('Editorial Workspace')
-                            ->description('Tulis dan susun konten menggunakan mode yang paling sesuai.')
+                        Forms\Components\Section::make('Ruang Kerja Konten')
+                            ->description('Susun artikel yang terstruktur, mudah dibaca, dan siap tampil di berbagai ukuran layar.')
                             ->icon('heroicon-o-pencil-square')
                             ->schema([
                                 Forms\Components\Grid::make(3)
@@ -78,7 +81,7 @@ class ArticleResource extends Resource
                                 Forms\Components\ToggleButtons::make('editor_mode')
                                     ->label('Mode Penulisan')
                                     ->options([
-                                        'visual' => 'Visual Editor',
+                                        'visual' => 'Editor Visual',
                                         'plain' => 'Teks Biasa',
                                         'html' => 'HTML',
                                     ])
@@ -95,13 +98,34 @@ class ArticleResource extends Resource
 
                                 Forms\Components\RichEditor::make('content')
                                     ->label('Isi Artikel')
-                                    ->helperText('Gunakan heading, list, quote, dan link untuk struktur yang mudah dibaca.')
+                                    ->helperText('Gunakan Heading 2 dan Heading 3 untuk membentuk daftar isi otomatis. Gambar dapat disisipkan langsung melalui tombol lampiran.')
                                     ->toolbarButtons([
+                                        'attachFiles',
                                         'bold', 'italic', 'underline', 'strike',
                                         'h2', 'h3', 'blockquote',
-                                        'bulletList', 'orderedList',
+                                        'bulletList', 'orderedList', 'codeBlock',
                                         'link', 'undo', 'redo',
                                     ])
+                                    ->fileAttachmentsDisk('public')
+                                    ->fileAttachmentsDirectory('articles/inline')
+                                    ->fileAttachmentsVisibility('public')
+                                    ->saveUploadedFileAttachmentsUsing(function (TemporaryUploadedFile $file): string {
+                                        $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+                                        if (! in_array($file->getMimeType(), $allowed, true) || $file->getSize() > 5 * 1024 * 1024) {
+                                            throw ValidationException::withMessages([
+                                                'content' => 'Gambar inline harus JPG, PNG, WebP, atau GIF dengan ukuran maksimal 5 MB.',
+                                            ]);
+                                        }
+
+                                        $extension = strtolower($file->guessExtension() ?: 'jpg');
+
+                                        return $file->storePubliclyAs(
+                                            'articles/inline/'.now()->format('Y/m'),
+                                            Str::uuid().'.'.$extension,
+                                            'public',
+                                        );
+                                    })
+                                    ->disableGrammarly()
                                     ->required(fn (Get $get): bool => $get('editor_mode') === 'visual')
                                     ->visible(fn (Get $get): bool => $get('editor_mode') === 'visual')
                                     ->columnSpanFull(),
@@ -129,23 +153,23 @@ class ArticleResource extends Resource
                                     ->columnSpanFull(),
 
                                 Forms\Components\Textarea::make('excerpt')
-                                     ->label('Ringkasan Artikel')
-                                     ->placeholder('Ringkasan singkat untuk kartu artikel dan hasil pencarian')
-                                     ->helperText('Jika kosong, sistem membuat ringkasan dari isi artikel.')
-                                     ->rows(4)
-                                     ->maxLength(300)
-                                     ->live(debounce: 500)
-                                     ->afterStateUpdated(function (Set $set, ?string $state, ?string $old, Get $get): void {
-                                         // Sync meta description in real-time if blank or matches old excerpt
-                                         $oldMetaDescription = Str::limit(trim(preg_replace('/\s+/', ' ', (string) $old)), 160);
-                                         if (blank($get('meta_description')) || $get('meta_description') === $oldMetaDescription) {
-                                             $set('meta_description', Str::limit(trim(preg_replace('/\s+/', ' ', (string) $state)), 160));
-                                         }
-                                     })
-                                     ->columnSpanFull(),
+                                    ->label('Ringkasan Artikel')
+                                    ->placeholder('Ringkasan singkat untuk kartu artikel dan hasil pencarian')
+                                    ->helperText('Jika kosong, sistem membuat ringkasan dari isi artikel.')
+                                    ->rows(4)
+                                    ->maxLength(300)
+                                    ->live(debounce: 500)
+                                    ->afterStateUpdated(function (Set $set, ?string $state, ?string $old, Get $get): void {
+                                        // Sync meta description in real-time if blank or matches old excerpt
+                                        $oldMetaDescription = Str::limit(trim(preg_replace('/\s+/', ' ', (string) $old)), 160);
+                                        if (blank($get('meta_description')) || $get('meta_description') === $oldMetaDescription) {
+                                            $set('meta_description', Str::limit(trim(preg_replace('/\s+/', ' ', (string) $state)), 160));
+                                        }
+                                    })
+                                    ->columnSpanFull(),
                             ]),
 
-                        Forms\Components\Section::make('SEO & Social Preview')
+                        Forms\Components\Section::make('Pratinjau Pencarian')
                             ->description('Optimalkan tampilan artikel pada mesin pencari dan media sosial.')
                             ->icon('heroicon-o-magnifying-glass')
                             ->collapsed()
@@ -247,6 +271,49 @@ class ArticleResource extends Resource
                                     ->imageEditor()
                                     ->responsiveImages()
                                     ->required(fn (Get $get): bool => in_array($get('workflow_status'), ['scheduled', 'published'], true)),
+                            ]),
+
+                        Forms\Components\Section::make('Media Artikel')
+                            ->description('Kelola galeri pendukung dan video tanpa menempelkan kode embed.')
+                            ->icon('heroicon-o-photo')
+                            ->collapsible()
+                            ->schema([
+                                SpatieMediaLibraryFileUpload::make('content_images')
+                                    ->label('Galeri Gambar')
+                                    ->collection('content_images')
+                                    ->multiple()
+                                    ->reorderable()
+                                    ->appendFiles()
+                                    ->image()
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                    ->maxFiles(12)
+                                    ->maxSize(5120)
+                                    ->imageEditor()
+                                    ->responsiveImages()
+                                    ->panelLayout('grid')
+                                    ->helperText('Maksimal 12 gambar, masing-masing 5 MB. Seret kartu untuk mengatur urutan.'),
+
+                                Forms\Components\Repeater::make('video_urls')
+                                    ->label('Video Pendukung')
+                                    ->addActionLabel('Tambahkan video')
+                                    ->defaultItems(0)
+                                    ->maxItems(5)
+                                    ->reorderable()
+                                    ->collapsible()
+                                    ->itemLabel(fn (array $state): string => ($state['title'] ?? null) ?: ($state['url'] ?? 'Video baru'))
+                                    ->schema([
+                                        Forms\Components\TextInput::make('title')
+                                            ->label('Judul Video')
+                                            ->placeholder('Contoh: Teknik menuang air')
+                                            ->maxLength(120),
+                                        Forms\Components\TextInput::make('url')
+                                            ->label('URL YouTube / Vimeo')
+                                            ->placeholder('https://www.youtube.com/watch?v=...')
+                                            ->required()
+                                            ->maxLength(500)
+                                            ->rule(new TrustedArticleVideoUrl),
+                                    ])
+                                    ->columns(1),
                             ]),
                     ])
                     ->columnSpan(['lg' => 1]),

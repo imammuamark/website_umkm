@@ -32,6 +32,9 @@ class BusinessProfile extends Model implements HasMedia
         $this->addMediaCollection('logo')
             ->singleFile();
 
+        $this->addMediaCollection('about_image')
+            ->singleFile();
+
         $this->addMediaCollection('legal_documents');
     }
 }

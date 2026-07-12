@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Katalog Kopi & Alat Seduh | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
+@section('title', 'Menu & Sajian | ' . \App\Models\SiteSetting::get('meta_title_default', 'Panama Corner'))
 
 @section('content')
-@include('partials.page_hero', ['eyebrow' => 'Kurasi Pilihan', 'title' => 'Katalog Produk', 'subtitle' => 'Temukan kopi Nusantara pilihan dan peralatan seduh yang kami kurasi untuk pengalaman terbaik di setiap cangkir.'])
+@include('partials.page_hero', array_merge(['eyebrow' => 'Pilihan Panama Corner', 'title' => 'Menu & Sajian', 'subtitle' => 'Jelajahi pilihan makanan, camilan, kopi, dan minuman nonkopi beserta informasi harga dan ketersediaannya.'], \App\Models\SiteSetting::pageHero('catalog')))
 
 @php
     $activeFilterCount = collect(['q', 'category', 'min_price', 'max_price'])
@@ -19,15 +19,21 @@
         closeModal() { this.openModal = false; document.body.style.overflow = ''; }
     }"
     @keydown.escape.window="closeModal()"
-    class="public-page-content flex-grow bg-[#f4f5f3] py-16 lg:py-20"
+    class="public-page-content flex-grow px-1 py-16 lg:py-24"
 >
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="mb-8 flex flex-col gap-5 rounded-2xl border border-white/80 bg-white p-5 shadow-[0_12px_35px_rgba(15,23,42,.06)] sm:flex-row sm:items-center sm:justify-between">
+        <div class="mb-10 flex flex-col gap-5 border-b border-[#d4d0c5] pb-7 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <p class="text-[10px] font-bold uppercase tracking-[.18em] text-primary">Product Discovery</p>
-                <p class="mt-1 text-sm text-gray-500"><strong class="text-gray-950">{{ $products->total() }}</strong> produk ditemukan{{ request('q') ? ' untuk “' . e(request('q')) . '”' : '' }}.</p>
+                <p class="text-[10px] font-bold uppercase tracking-[.18em] text-primary">Jelajahi Menu</p>
+                <p class="mt-1 text-sm text-gray-500"><strong class="text-gray-950">{{ $products->total() }}</strong> pilihan ditemukan{{ request('q') ? ' untuk “' . e(request('q')) . '”' : '' }}.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
+                @if(\App\Models\DigitalMenuSetting::current()->is_enabled)
+                    <a href="{{ route('digital-menu.index') }}" class="inline-flex min-h-9 items-center gap-2 rounded-full bg-primary px-4 text-[11px] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+                        <svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 14h2v6h-6v-2M14 18h2"/></svg>
+                        Buka Mode Menu
+                    </a>
+                @endif
                 @if($activeFilterCount > 0)
                     <span class="rounded-full bg-primary/8 px-3 py-1.5 text-[10px] font-bold text-primary">{{ $activeFilterCount }} filter aktif</span>
                     <a href="{{ route('produk') }}" class="rounded-full border border-gray-200 px-3 py-1.5 text-[10px] font-bold text-gray-600 transition hover:border-primary hover:text-primary">Reset Filter</a>
@@ -38,9 +44,9 @@
 
         <div class="grid gap-8 lg:grid-cols-[270px_1fr]">
             <aside>
-                <form action="{{ route('produk') }}" method="GET" class="premium-surface space-y-7 rounded-2xl border border-gray-100 bg-white p-6 lg:sticky lg:top-28">
+                <form action="{{ route('produk') }}" method="GET" class="editorial-surface space-y-7 rounded-[1.35rem] p-6 lg:sticky lg:top-24">
                     <div class="flex items-center justify-between border-b border-gray-100 pb-5">
-                        <div><p class="text-[10px] font-bold uppercase tracking-[.16em] text-primary">Filter Produk</p><h2 class="mt-1 text-lg font-extrabold text-gray-950">Persempit pilihan</h2></div>
+                        <div><p class="text-[10px] font-bold uppercase tracking-[.16em] text-primary">Filter Sajian</p><h2 class="mt-1 text-lg font-extrabold text-gray-950">Persempit pilihan</h2></div>
                         <svg aria-hidden="true" class="h-5 w-5 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
                     </div>
 
@@ -48,14 +54,14 @@
                         <label for="q" class="text-[10px] font-bold uppercase tracking-[.14em] text-gray-500">Pencarian</label>
                         <div class="relative">
                             <svg aria-hidden="true" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-                            <input type="search" name="q" id="q" value="{{ request('q') }}" maxlength="100" autocomplete="off" class="block min-h-11 w-full rounded-xl py-2 pl-10 pr-3 text-sm outline-none" placeholder="Nama produk...">
+                            <input type="search" name="q" id="q" value="{{ request('q') }}" maxlength="100" autocomplete="off" class="block min-h-11 w-full rounded-xl py-2 pl-10 pr-3 text-sm outline-none" placeholder="Cari menu atau minuman...">
                         </div>
                     </div>
 
                     <fieldset>
                         <legend class="text-[10px] font-bold uppercase tracking-[.14em] text-gray-500">Kategori</legend>
                         <div class="mt-3 space-y-1.5">
-                            <a href="{{ route('produk', request()->except(['category', 'page'])) }}" class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm transition {{ !request('category') ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}"><span>Semua Produk</span><span class="text-[10px] opacity-65">{{ \App\Models\Product::count() }}</span></a>
+                            <a href="{{ route('produk', request()->except(['category', 'page'])) }}" class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm transition {{ !request('category') ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}"><span>Semua Sajian</span><span class="text-[10px] opacity-65">{{ \App\Models\Product::count() }}</span></a>
                             @foreach($categories as $category)
                                 <a href="{{ route('produk', array_merge(request()->except('page'), ['category' => $category->slug])) }}" class="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm transition {{ request('category') === $category->slug ? 'bg-primary text-white shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-primary' }}"><span>{{ $category->name }}</span><span class="text-[10px] opacity-65">{{ $category->products_count + $category->children->sum('products_count') }}</span></a>
                                 @if($category->children->isNotEmpty())
@@ -80,7 +86,7 @@
                     <div class="space-y-2">
                         <label for="sort" class="text-[10px] font-bold uppercase tracking-[.14em] text-gray-500">Urutkan</label>
                         <select name="sort" id="sort" class="block min-h-11 w-full rounded-xl px-3 text-sm">
-                            <option value="latest" @selected(request('sort', 'latest') === 'latest')>Produk Terbaru</option>
+                            <option value="latest" @selected(request('sort', 'latest') === 'latest')>Menu Terbaru</option>
                             <option value="price_asc" @selected(request('sort') === 'price_asc')>Harga Terendah</option>
                             <option value="price_desc" @selected(request('sort') === 'price_desc')>Harga Tertinggi</option>
                             <option value="popular" @selected(request('sort') === 'popular')>Paling Populer</option>
@@ -93,7 +99,7 @@
                 </form>
             </aside>
 
-            <section aria-label="Daftar produk">
+            <section aria-label="Daftar menu dan sajian">
                 @if($products->isNotEmpty())
                     <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                         @foreach($products as $product)
@@ -104,9 +110,9 @@
                 @else
                     <div class="premium-surface rounded-2xl border border-dashed border-gray-300 bg-white p-12 text-center sm:p-16">
                         <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/8 text-primary"><svg aria-hidden="true" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></span>
-                        <h2 class="mt-5 text-xl font-extrabold text-gray-950">Produk tidak ditemukan</h2>
-                        <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">Tidak ada produk yang sesuai dengan kombinasi filter saat ini. Coba kata kunci atau rentang harga lain.</p>
-                        <a href="{{ route('produk') }}" class="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-secondary px-5 text-xs font-bold text-[#211b10]">Tampilkan Semua Produk</a>
+                        <h2 class="mt-5 text-xl font-extrabold text-gray-950">Sajian tidak ditemukan</h2>
+                        <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-gray-500">Tidak ada sajian yang sesuai dengan filter saat ini. Coba kata kunci atau rentang harga lain.</p>
+                        <a href="{{ route('produk') }}" class="mt-6 inline-flex min-h-11 items-center justify-center rounded-lg bg-secondary px-5 text-xs font-bold text-[#211b10]">Tampilkan Semua Sajian</a>
                     </div>
                 @endif
             </section>
@@ -129,9 +135,11 @@
                         <p x-text="activeProduct.price" class="mt-4 text-xl font-extrabold text-secondary"></p>
                         <div class="my-6 h-px bg-gray-100"></div>
                         <p x-text="activeProduct.description" class="text-sm leading-7 text-gray-600"></p>
-                        <div class="mt-8 grid gap-3 sm:grid-cols-2">
+                        <div class="mt-8 grid gap-3 {{ (bool) \App\Models\SiteSetting::get('enable_whatsapp_order', true) ? 'sm:grid-cols-2' : 'grid-cols-1' }}">
                             <a :href="activeProduct.detailUrl" class="inline-flex min-h-12 items-center justify-center rounded-xl border border-primary text-sm font-bold text-primary transition hover:bg-primary hover:text-white">Detail Produk</a>
-                            <a :href="activeProduct.waUrl" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#25d366] px-4 text-sm font-bold text-white transition hover:brightness-95">Pesan via WhatsApp</a>
+                            @if((bool) \App\Models\SiteSetting::get('enable_whatsapp_order', true))
+                                <a :href="activeProduct.waUrl" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center justify-center rounded-xl bg-[#25d366] px-4 text-sm font-bold text-white transition hover:brightness-95">Pesan via WhatsApp</a>
+                            @endif
                         </div>
                     </div>
                 </div>

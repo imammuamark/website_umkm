@@ -28,32 +28,60 @@
     }
 </script>
 
-<div class="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-gray-950 px-4 font-sans relative overflow-hidden">
-    <!-- Subtle premium background gradient decorative element -->
-    <div class="absolute -top-40 -left-40 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-40 -right-40 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl"></div>
+<div class="dark min-h-screen flex flex-col items-center justify-center bg-[#090d16] px-4 font-sans relative overflow-hidden">
+    <!-- Ambient luxury lighting effects in the background -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-teal-500/10 to-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute -top-40 -right-40 w-96 h-96 bg-teal-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
-    <div class="w-full max-w-md space-y-6 relative z-10">
+    <!-- Fine grid pattern to add luxury texture -->
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none"></div>
+
+    <div class="w-full max-w-[440px] space-y-8 relative z-10">
         <!-- Logo & Branding Header -->
-        <div class="text-center space-y-3">
-            <div class="inline-flex h-12 w-12 rounded-2xl bg-teal-800 flex items-center justify-center font-extrabold text-white text-lg shadow-xl shadow-teal-900/10 border border-teal-700/20 mx-auto">
-                PC
+        <div class="text-center space-y-4">
+            <!-- Brushed gradient logo ring -->
+            <div class="relative inline-flex items-center justify-center p-[1px] rounded-2xl bg-gradient-to-tr from-teal-500 via-slate-800 to-amber-500/50 shadow-2xl">
+                <div class="h-12 w-12 rounded-[15px] bg-[#0d1527] flex items-center justify-center font-black text-white text-base tracking-wider">
+                    PC
+                </div>
             </div>
-            <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white font-title">
-                Panama Corner
-            </h1>
+            <div class="space-y-1">
+                <h1 class="text-xs font-bold tracking-[0.25em] text-teal-400 uppercase font-sans">
+                    Panama Corner
+                </h1>
+            </div>
         </div>
 
-        <!-- Login Card -->
-        <div class="bg-white dark:bg-gray-900 border border-slate-100 dark:border-gray-800 rounded-3xl p-8 shadow-xl shadow-slate-200/50 dark:shadow-none space-y-6">
-            <div class="space-y-1 text-center">
-                <h2 class="text-lg font-semibold text-gray-950 dark:text-white">
+        <!-- Glassmorphic Login Card -->
+        <div class="bg-[#0e1626]/80 backdrop-blur-xl border border-slate-800/80 rounded-[32px] p-8 sm:p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)] space-y-6">
+            <div class="space-y-1.5 text-center">
+                <h2 class="text-xl font-bold text-white tracking-tight font-title">
                     Masuk ke Sistem
                 </h2>
-                <p class="text-xs text-slate-400 dark:text-slate-500">
-                    Gunakan email dan kata sandi administrator Anda.
+                <p class="text-xs text-slate-400">
+                    Masukkan akun administrator Anda untuk melanjutkan.
                 </p>
             </div>
+
+            <!-- Injected custom style blocks to override raw input designs to look even more high-end -->
+            <style>
+                .fi-fo-text-input input {
+                    background-color: #0b111e !important;
+                    border-color: #1e293b !important;
+                    color: #f8fafc !important;
+                    border-radius: 12px !important;
+                    transition: all 0.2s ease-in-out !important;
+                }
+                .fi-fo-text-input input:focus {
+                    border-color: #14b8a6 !important;
+                    box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.15) !important;
+                }
+                .fi-btn {
+                    border-radius: 12px !important;
+                    transition: all 0.2s ease-in-out !important;
+                }
+            </style>
 
             {{ \Filament\Support\Facades\FilamentView::renderHook('panels::auth.login.form.before') }}
 
@@ -73,7 +101,7 @@
         
         <!-- Footer -->
         <div class="text-center">
-            <p class="text-[10px] text-slate-400 dark:text-slate-500">
+            <p class="text-[10px] text-slate-500 tracking-wider">
                 &copy; {{ date('Y') }} Panama Corner. Hak Cipta Dilindungi.
             </p>
         </div>

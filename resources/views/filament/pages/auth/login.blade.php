@@ -28,35 +28,35 @@
     }
 </script>
 
-<div class="dark min-h-screen flex flex-col items-center justify-center bg-[#090d16] px-4 font-sans relative overflow-hidden">
-    <!-- Ambient luxury lighting effects in the background -->
-    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-teal-500/10 to-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="absolute -top-40 -right-40 w-96 h-96 bg-teal-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="min-h-screen flex flex-col items-center justify-center bg-slate-50/60 px-4 font-sans relative overflow-hidden">
+    <!-- Ambient professional lighting effects in the background (light theme) -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-teal-500/5 to-amber-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute -top-40 -right-40 w-96 h-96 bg-teal-500/10 rounded-full blur-[100px] pointer-events-none"></div>
     <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
-    <!-- Fine grid pattern to add luxury texture -->
-    <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none"></div>
+    <!-- Fine grid pattern to add luxury texture (light theme) -->
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f0_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f0_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40 pointer-events-none"></div>
 
     <div class="w-full max-w-[440px] space-y-8 relative z-10">
         <!-- Logo & Branding Header -->
         <div class="text-center space-y-4">
-            <!-- Brushed gradient logo ring -->
-            <div class="relative inline-flex items-center justify-center p-[1px] rounded-2xl bg-gradient-to-tr from-teal-500 via-slate-800 to-amber-500/50 shadow-2xl">
-                <div class="h-12 w-12 rounded-[15px] bg-[#0d1527] flex items-center justify-center font-black text-white text-base tracking-wider">
+            <!-- Elegant crisp white logo card with fine border -->
+            <div class="relative inline-flex items-center justify-center p-[1px] rounded-2xl bg-gradient-to-tr from-teal-500 via-slate-100 to-amber-500/40 shadow-md">
+                <div class="h-12 w-12 rounded-[15px] bg-white flex items-center justify-center font-black text-teal-800 text-base tracking-wider border border-slate-50">
                     PC
                 </div>
             </div>
             <div class="space-y-1">
-                <h1 class="text-xs font-bold tracking-[0.25em] text-teal-400 uppercase font-sans">
+                <h1 class="text-xs font-bold tracking-[0.25em] text-teal-800 uppercase font-sans">
                     Panama Corner
                 </h1>
             </div>
         </div>
 
-        <!-- Glassmorphic Login Card -->
-        <div class="bg-[#0e1626]/80 backdrop-blur-xl border border-slate-800/80 rounded-[32px] p-8 sm:p-10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.7)] space-y-6">
+        <!-- Crisp Professional Login Card -->
+        <div class="bg-white border border-slate-100 rounded-[32px] p-8 sm:p-10 shadow-[0_20px_50px_rgba(15,118,110,0.06)] space-y-6">
             <div class="space-y-1.5 text-center">
-                <h2 class="text-xl font-bold text-white tracking-tight font-title">
+                <h2 class="text-xl font-bold text-slate-900 tracking-tight font-title">
                     Masuk ke Sistem
                 </h2>
                 <p class="text-xs text-slate-400">
@@ -64,22 +64,26 @@
                 </p>
             </div>
 
-            <!-- Injected custom style blocks to override raw input designs to look even more high-end -->
+            <!-- Injected custom style blocks to override inputs to look light-theme luxury -->
             <style>
                 .fi-fo-text-input input {
-                    background-color: #0b111e !important;
-                    border-color: #1e293b !important;
-                    color: #f8fafc !important;
+                    background-color: #ffffff !important;
+                    border-color: #cbd5e1 !important;
+                    color: #0f172a !important;
                     border-radius: 12px !important;
                     transition: all 0.2s ease-in-out !important;
                 }
                 .fi-fo-text-input input:focus {
-                    border-color: #14b8a6 !important;
-                    box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.15) !important;
+                    border-color: #0f766e !important;
+                    box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.1) !important;
                 }
                 .fi-btn {
                     border-radius: 12px !important;
+                    background-color: #0f766e !important;
                     transition: all 0.2s ease-in-out !important;
+                }
+                .fi-btn:hover {
+                    background-color: #115e59 !important;
                 }
             </style>
 
@@ -101,7 +105,7 @@
         
         <!-- Footer -->
         <div class="text-center">
-            <p class="text-[10px] text-slate-500 tracking-wider">
+            <p class="text-[10px] text-slate-400 tracking-wider">
                 &copy; {{ date('Y') }} Panama Corner. Hak Cipta Dilindungi.
             </p>
         </div>

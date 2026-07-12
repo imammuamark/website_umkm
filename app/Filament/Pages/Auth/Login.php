@@ -8,5 +8,5 @@ class Login extends BaseLogin
 {
     protected static string $view = 'filament.pages.auth.login';
 
-    protected static string $layout = 'layouts.auth';
+    protected static string $layout = 'filament-panels::components.layout.base';
 }

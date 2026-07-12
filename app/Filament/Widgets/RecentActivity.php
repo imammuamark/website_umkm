@@ -19,7 +19,7 @@ class RecentActivity extends BaseWidget
     {
         return $table
             ->query(
-                ActivityLog::query()->latest()
+                ActivityLog::query()->latest()->limit(5)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
@@ -44,7 +44,6 @@ class RecentActivity extends BaseWidget
                     ->label('Deskripsi Aktivitas')
                     ->wrap(),
             ])
-            ->paginated(false)
-            ->limit(5);
+            ->paginated(false);
     }
 }

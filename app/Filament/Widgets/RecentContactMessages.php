@@ -19,7 +19,7 @@ class RecentContactMessages extends BaseWidget
     {
         return $table
             ->query(
-                ContactMessage::query()->latest()->where('is_completed', false)
+                ContactMessage::query()->latest()->where('is_completed', false)->limit(5)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('created_at')
@@ -38,7 +38,6 @@ class RecentContactMessages extends BaseWidget
                     ->wrap(),
             ])
             ->paginated(false)
-            ->limit(5)
             ->emptyStateHeading('Semua pesan pelanggan telah dibaca')
             ->emptyStateDescription('Tidak ada leads baru yang belum ditindaklanjuti.');
     }

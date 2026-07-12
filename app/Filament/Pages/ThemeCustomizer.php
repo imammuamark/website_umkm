@@ -7,6 +7,8 @@ use App\Models\ActivityLog;
 use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -34,6 +36,8 @@ class ThemeCustomizer extends Page implements HasForms
             'theme_secondary_color' => SiteSetting::get('theme_secondary_color', '#F59E0B'),
             'theme_font_title' => SiteSetting::get('theme_font_title', 'Plus Jakarta Sans'),
             'theme_font_body' => SiteSetting::get('theme_font_body', 'Inter'),
+            'hero_image_upload' => SiteSetting::get('hero_image_upload'),
+            'hero_image_url' => SiteSetting::get('hero_image_url', 'https://images.unsplash.com/photo-1507133750040-4a8f57021571?q=80&w=1600&auto=format&fit=crop'),
         ]);
     }
 
@@ -52,7 +56,7 @@ class ThemeCustomizer extends Page implements HasForms
                             ->required(),
                     ])->columns(2),
 
-                Section::make('Tipografi (Fonts)')
+                 Section::make('Tipografi (Fonts)')
                     ->description('Pilih kombinasi font dari Google Fonts untuk judul dan teks konten.')
                     ->schema([
                         Select::make('theme_font_title')
@@ -73,6 +77,21 @@ class ThemeCustomizer extends Page implements HasForms
                                 'Open Sans' => 'Open Sans',
                             ])
                             ->required(),
+                    ])->columns(2),
+
+                Section::make('Gambar Hero Halaman Utama')
+                    ->description('Konfigurasi gambar latar belakang hero di halaman utama. Anda dapat mengunggah file gambar baru atau memberikan tautan URL eksternal (prioritas pada file yang diunggah jika keduanya terisi).')
+                    ->schema([
+                        FileUpload::make('hero_image_upload')
+                            ->label('Unggah Gambar Hero')
+                            ->image()
+                            ->directory('settings')
+                            ->visibility('public')
+                            ->disk('public'),
+                        TextInput::make('hero_image_url')
+                            ->label('Atau Gunakan URL Gambar Eksternal')
+                            ->url()
+                            ->placeholder('https://images.unsplash.com/...'),
                     ])->columns(2)
             ])
             ->statePath('data');

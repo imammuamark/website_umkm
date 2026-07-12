@@ -47,42 +47,36 @@
 
 <!-- Floating Glassmorphic Stats Cards Overlay -->
 <section class="relative z-20 -mt-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="bg-white/90 dark:bg-gray-900/90 backdrop-blur-md rounded-[28px] shadow-xl shadow-gray-250/20 p-6 md:p-8 border border-white/40 dark:border-gray-800 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Card 1 -->
-        <div class="flex items-center gap-4 bg-white/40 dark:bg-gray-800/40 p-5 rounded-2xl border border-white/20 dark:border-gray-800 text-left">
-            <div class="h-12 w-12 rounded-xl bg-secondary/15 flex items-center justify-center text-secondary text-xl font-bold">
+        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl shadow-xl shadow-gray-250/10 p-8 border border-white/40 dark:border-gray-800 flex flex-col items-center text-center group hover:scale-[1.02] transition duration-300">
+            <div class="h-14 w-14 rounded-full bg-secondary/15 flex items-center justify-center text-secondary text-2xl shadow-inner mb-4">
                 ☕
             </div>
-            <div>
-                <span class="block text-2xl font-extrabold text-slate-900 dark:text-white font-title leading-tight">
-                    {{ date('Y') - $stats['founded_year'] }} Tahun
-                </span>
-                <span class="block text-xs text-slate-500 font-medium mt-0.5">Pengalaman Roasting</span>
-            </div>
+            <span class="block text-3xl font-extrabold text-slate-900 dark:text-white font-title leading-none">
+                {{ date('Y') - $stats['founded_year'] }} Tahun
+            </span>
+            <span class="block text-xs text-slate-500 dark:text-slate-400 font-medium mt-2">Pengalaman Roasting</span>
         </div>
         <!-- Card 2 -->
-        <div class="flex items-center gap-4 bg-white/40 dark:bg-gray-800/40 p-5 rounded-2xl border border-white/20 dark:border-gray-800 text-left">
-            <div class="h-12 w-12 rounded-xl bg-secondary/15 flex items-center justify-center text-secondary text-xl font-bold">
-                🧪
+        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl shadow-xl shadow-gray-250/10 p-8 border border-white/40 dark:border-gray-800 flex flex-col items-center text-center group hover:scale-[1.02] transition duration-300">
+            <div class="h-14 w-14 rounded-full bg-secondary/15 flex items-center justify-center text-secondary text-2xl shadow-inner mb-4">
+                🥤
             </div>
-            <div>
-                <span class="block text-2xl font-extrabold text-slate-900 dark:text-white font-title leading-tight">
-                    {{ $stats['products_count'] }}+
-                </span>
-                <span class="block text-xs text-slate-500 font-medium mt-0.5">Varian Biji & Kopi Botol</span>
-            </div>
+            <span class="block text-3xl font-extrabold text-slate-900 dark:text-white font-title leading-none">
+                {{ $stats['products_count'] }}+
+            </span>
+            <span class="block text-xs text-slate-500 dark:text-slate-400 font-medium mt-2">Varian Biji Kopi & Kopi Botol</span>
         </div>
         <!-- Card 3 -->
-        <div class="flex items-center gap-4 bg-white/40 dark:bg-gray-800/40 p-5 rounded-2xl border border-white/20 dark:border-gray-800 text-left">
-            <div class="h-12 w-12 rounded-xl bg-secondary/15 flex items-center justify-center text-secondary text-xl font-bold">
-                📍
+        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-2xl shadow-xl shadow-gray-250/10 p-8 border border-white/40 dark:border-gray-800 flex flex-col items-center text-center group hover:scale-[1.02] transition duration-300">
+            <div class="h-14 w-14 rounded-full bg-secondary/15 flex items-center justify-center text-secondary text-2xl shadow-inner mb-4">
+                👥
             </div>
-            <div>
-                <span class="block text-2xl font-extrabold text-slate-900 dark:text-white font-title leading-tight">
-                    {{ $stats['locations_count'] }} Cabang
-                </span>
-                <span class="block text-xs text-slate-500 font-medium mt-0.5">Experience Bar & Roastery</span>
-            </div>
+            <span class="block text-3xl font-extrabold text-slate-900 dark:text-white font-title leading-none">
+                {{ $stats['locations_count'] }} Cabang
+            </span>
+            <span class="block text-xs text-slate-500 dark:text-slate-400 font-medium mt-2">Experience Bar & Roastery</span>
         </div>
     </div>
 </section>

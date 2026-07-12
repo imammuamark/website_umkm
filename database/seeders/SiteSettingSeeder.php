@@ -34,6 +34,8 @@ class SiteSettingSeeder extends Seeder
             'meta_pixel_id' => 'XXXXXXXXXXXXXXX',
             'tiktok_pixel_id' => 'XXXXXXXXXXXXXXXX',
             'google_maps_embed' => '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.835848970984!2d107.61864197499641!3d-6.9101968930892285!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e63a152e0081%3A0x67db238a8e3230a1!2sBandung%20Indah%20Plaza!5e0!3m2!1sid!2sid!4v1719876543210!5m2!1sid!2sid" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
+            'hero_image_url' => 'https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?q=80&w=1200&auto=format&fit=crop',
+            'hero_image_upload' => null,
         ];
 
         foreach ($settings as $key => $value) {

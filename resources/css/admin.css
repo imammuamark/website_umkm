@@ -581,6 +581,12 @@
     font-weight: 520;
 }
 
+.fi-layout .fi-global-search-field .fi-input:focus,
+.fi-layout .fi-global-search-field .fi-input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 .dark .fi-layout .fi-global-search-field .fi-input {
     color: #edf5f1 !important;
 }
